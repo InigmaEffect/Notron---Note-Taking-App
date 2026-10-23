@@ -605,6 +605,24 @@ body.ov:has(#pill[data-s=imgopts]) #scrim{opacity:0}
 .mact{padding:4px 12px 12px;display:flex;flex-direction:column;gap:8px;flex:none}.mact:empty{display:none}.mi{font-size:12px;color:var(--mu)}
 
 html,body{overscroll-behavior:none;overscroll-behavior-y:none}
+
+.b.armed{background:var(--acs)!important;color:var(--ac)!important;animation:edpulse 1.1s ease-in-out infinite}
+@keyframes edpulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--ac) 22%,transparent)}}
+
+/* ---- 1.04 calculator layout ---- */
+.calc,.imgf,.car,.embed{margin-top:18px;margin-bottom:18px}
+.tw2{overflow-x:hidden!important;margin:0!important}
+.ctb{table-layout:auto;width:100%;min-width:0}
+.ctb td{min-width:0!important;padding:2px 1px!important}
+.ctb th{padding:5px 4px!important;white-space:normal!important}
+.ctb .cin{padding:4px 4px!important;text-overflow:clip;field-sizing:content;min-width:2.2em;max-width:100%}
+.ctb td:first-child .cin{min-width:5em}
+.ctb tfoot td{white-space:normal!important;padding:6px 4px!important}
+.ccard{padding:0 8px!important}.ccard summary{padding:7px 0!important;align-items:flex-start!important}
+.ccard .cs-a{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:break-word;line-height:1.25}
+.ccard .cs-b{flex:none;white-space:nowrap}
+.cfields{gap:6px!important;padding-bottom:8px!important}
+.cagg{display:flex;flex-wrap:wrap;gap:6px 14px;padding:9px 6px 2px;font-size:13px}.cagg span{display:flex;gap:6px;align-items:baseline;color:var(--mu)}.cagg i{font-style:normal;font-size:11.5px}.cagg b{color:var(--ter);font-weight:680}
 </style>
 </head>
 <body>
@@ -997,7 +1015,7 @@ const vv=window.visualViewport;
 const btn=(icon,a,label,o={})=>`<button class="b${o.c?' '+o.c:''}" data-a="${a}"${o.p!=null?` data-p="${o.p}"`:''} aria-label="${label}"${o.id?` id="${o.id}"`:''}><i>${ic(icon,o.s||21)}</i>${o.extra||''}</button>`;
 const tbtn=(txt,a,p,o={})=>`<button class="b t${o.c?' '+o.c:''}" data-a="${a}" data-p="${p}"${o.id?` id="${o.id}"`:''}>${txt}</button>`;
 const BARS={
- nav:[btn('files','files','Files'),`<button class="b center" data-a="search" id="center" aria-label="Search notes"><span id="ctitle">Search vault</span><span id="cdots"></span></button>`,btn('tabs','tabs','Open notes',{extra:'<em id="tabN">0</em>'}),btn('plus','newnote','New note'),btn('dots','menu','More')],
+ nav:[btn('files','files','Files'),`<button class="b center" data-a="search" id="center" aria-label="Search notes"><span id="ctitle">Search vault</span><span id="cdots"></span></button>`,btn('pencil','editbtn','Edit note',{c:'editb'}),btn('tabs','tabs','Open notes',{extra:'<em id="tabN">0</em>'}),btn('plus','newnote','New note'),btn('dots','menu','More')],
  img:[],
  imgcrop:[btn('x','imgcropcancel','Cancel'),`<div class="tbs"><div class="tbg" id="crasp"></div></div>`,btn('check','imgcropapply','Apply',{c:'ac'})],
  imgopts:[btn('back','back','Back'),`<div class="lab">Image</div>`,btn('check','imgback','Done',{c:'ac'})],
@@ -1046,7 +1064,7 @@ function layout(){
  const anticip=COARSE&&kb<60&&(s==='search'||s==='prompt'||(typ&&(s==='edit'||s==='link')))&&performance.now()-(st.t0||0)<950;
  if(anticip){kb=S.set.kbh||Math.round(BH*.47);if(!layout.t)layout.t=setTimeout(()=>{layout.t=0;layout()},980)}
  const off=vv?vv.offsetTop:0,pos=S.set.pillPos||'bottom',eff=(pos==='side'&&s==='nav')?'side':(pos==='top'&&!EDITF.has(s))?'top':'bottom',miniOn=MINI&&s==='nav'&&!S.pillLock&&eff!=='side';
- const tr=S.set.tbRows===1?1:2,bh=eff==='side'?276:s==='search'?0:(s==='edit'||s==='link')?(tr===1?56:82):62;
+ const tr=S.set.tbRows===1?1:2,bh=eff==='side'?330:s==='search'?0:(s==='edit'||s==='link')?(tr===1?56:82):62;
  const w0=mx?Math.min(vw-12,980):Math.min(vw-(compact?24:16),compact?440:620),w=eff==='side'?60:miniOn?96:w0;
  const bo=kb>60?((resized&&!anticip)?8:kb+8):(mx?Math.max(m.sb,6):m.sb+12);
  const gh=s==='link'?0:22;
@@ -1732,7 +1750,7 @@ function applyGlow(){const g=S.set.glow||DEFGLOW,r=document.documentElement.styl
 function applyFs(force){const fsOn=!!document.fullscreenElement||matchMedia('(display-mode: fullscreen)').matches;
  if(force===false){if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});return}
  if(!fsOn&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen({navigationUI:'hide'}).catch(()=>{})}
-addEventListener('pointerup',()=>{if(S.set.fs2&&!document.fullscreenElement&&!matchMedia('(display-mode: fullscreen)').matches&&(matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: minimal-ui)').matches)&&!typingNow())applyFs()});
+
 function schip(on,a,at,l,st_=''){return `<button class="chip${on?' sel':''}" data-a="${a}" ${at}${st_?` style="${st_}"`:''}>${l}</button>`}
 function setHeadX(){
  const hs=S.set.hs,hrow=i=>`<div class="hsrow"><b>H${i}</b><input type="range" id="hs${i}" min="0.7" max="2.8" step="0.05" value="${hs[i]}" aria-label="Heading ${i} size"><span id="hsv${i}">${(+hs[i]).toFixed(2)}</span></div>`;
@@ -2552,7 +2570,7 @@ A_('graphfrost','Graph: toggle graph behind notes','expand',()=>{const g=GD();g.
 A_('graphview','Graph: next saved view','graph',()=>{const v=GV();if(!v.length)return toast('No saved views yet');const i=v.findIndex(x=>x.id===GD().view),nx=v[(i+1)%v.length];const el=document.createElement('i');el.dataset.g='view';el.dataset.p=nx.id;document.body.appendChild(el);el.click();el.remove()},{short:'Next view'});
 
 /* ============ Notron 3.1: image system ============ */
-const APP_V='1.02 Stable';
+const APP_V='1.04 Stable';
 S.media=new Map();
 Object.assign(I,{im:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-9 9"/>',imcrop:'<path d="M6 2v14a2 2 0 0 0 2 2h14M2 6h14a2 2 0 0 1 2 2v14"/>',imrotr:'<path d="M20 11a8 8 0 1 0-2.4 5.7M20 4v7h-7"/>',imrotl:'<path d="M4 11a8 8 0 1 1 2.4 5.7M4 4v7h7"/>',imflip:'<path d="M12 3v18M8 7 3 12l5 5zM16 7l5 5-5 5z"/>',
  imwi:'<rect x="5" y="9" width="14" height="6" rx="1.5"/><path d="M4 4h16M4 20h16"/>',imwl:'<rect x="3" y="4" width="8" height="8" rx="1.5"/><path d="M14 5h7M14 9h7M3 16h18M3 20h18"/>',imwr:'<rect x="13" y="4" width="8" height="8" rx="1.5"/><path d="M3 5h7M3 9h7M3 16h18M3 20h18"/>',
@@ -2829,6 +2847,51 @@ function setBackupPage(){const lb=S.set.lastBackup;let pers='checking…';(navig
  <div class="sgroup"><div class="sh">Storage</div><p class="note" id="bkp">${pers}</p><p class="note">${plural(S.notes.size,'note')} · ${plural(S.media.size,'image')} stored on this device.</p></div>`}
 document.addEventListener('visibilitychange',()=>{if(document.hidden){try{syncNow()}catch(e){}flush()}});addEventListener('pagehide',()=>{try{syncNow()}catch(e){}flush()});
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+
+
+/* ============ Stable 1.03: tap never edits; Edit button does ============ */
+let EDARM=0;
+const EDKEEP='a,input,button,select,textarea:not(#ed),.calc,.imgf,.car,.imgi,.embed,.tg,.wl,.cfx,.cover,#cover,.rh,.cr,summary';
+const edBtn=()=>document.querySelector('.set[data-set=nav] [data-a=editbtn]');
+function armEdit(){EDARM=Date.now()+3500;const b=edBtn();if(b)b.classList.add('armed');setTimeout(()=>{if(Date.now()>=EDARM){const x=edBtn();x&&x.classList.remove('armed')}},3600)}
+function disarmEdit(){EDARM=0;const b=edBtn();if(b)b.classList.remove('armed')}
+function enterEditAt(x,y){disarmEdit();const t=curTab();if(!t)return;
+ if(t.src){ed.focus();return}
+ let r=null;try{r=document.caretRangeFromPoint?document.caretRangeFromPoint(x,y):null}catch(e){}
+ wys.focus({preventScroll:true});if(r&&wys.contains(r.startContainer)){const s=getSelection();s.removeAllRanges();s.addRange(r)}}
+document.addEventListener('mousedown',e=>{if(st.s!=='nav'||!cur())return;const t=e.target;if(!t.closest||!t.closest('#wys,#ed')||t.closest(EDKEEP))return;e.preventDefault()},true);
+document.addEventListener('click',e=>{if(st.s!=='nav'||!cur()||e.defaultPrevented&&false)return;const t=e.target;if(!t.closest||!t.closest('#wys,#ed')||t.closest(EDKEEP))return;
+ if(Date.now()<EDARM)enterEditAt(e.clientX,e.clientY);else armEdit()});
+Object.assign(A,{editbtn:()=>{if(!cur())return toast('Open a note first');disarmEdit();focusEditor()}});
+A_('editnote','Edit this note','pencil',()=>{if(!cur())return toast('Open a note first');disarmEdit();focusEditor()},{short:'Edit'});
+
+
+/* ============ Stable 1.04: calculator + caret fixes ============ */
+const calcKey=el=>{const n=cur();return (n?n.path:'')+'|'+[...wys.querySelectorAll('.calc')].indexOf(el)};
+const cfoldGet=el=>{try{return !el.closest('.embed')&&!!(S.set.cfold||{})[calcKey(el)]}catch(e){return false}};
+function cfoldSave(el){if(el.closest('.embed'))return;const m=S.set.cfold||(S.set.cfold={}),k=calcKey(el);if(el.__fold)m[k]=1;else delete m[k];saveMeta()}
+/* touching calculator chrome must never focus the editor or raise the keyboard */
+document.addEventListener('mousedown',e=>{const c=e.target.closest&&e.target.closest('.calc');if(!c)return;if(e.target.closest('input,select,textarea,[contenteditable=true],.cfx'))return;e.preventDefault()},true);
+/* caret before/after calculators, images, tables and embeds */
+const ATOMB='.calc,.imgf,.car,.embed,pre,hr,table';
+const isAtomB=k=>!!(k&&k.matches&&k.matches(ATOMB));
+function caretIn(p,end){const s=getSelection(),r=document.createRange();r.selectNodeContents(p);r.collapse(!end);s.removeAllRanges();s.addRange(r)}
+function gapNear(b,where){const nb=where==='before'?b.previousElementSibling:b.nextElementSibling;
+ if(nb&&!isAtomB(nb)){caretIn(nb,where==='before');return true}
+ const p=document.createElement('p');p.innerHTML='<br>';snap();where==='before'?b.before(p):b.after(p);caretIn(p);schedule();return true}
+function gapAtY(y){const kids=[...wys.children];let prev=null,next=null;for(const k of kids){const r=k.getBoundingClientRect();if(r.top+r.height/2>y){next=k;break}prev=k}
+ if(!prev&&!next)return false;if(!((isAtomB(prev)||!prev)&&(isAtomB(next)||!next)))return false;
+ const p=document.createElement('p');p.innerHTML='<br>';snap();next?wys.insertBefore(p,next):wys.appendChild(p);caretIn(p);schedule();return true}
+wys.addEventListener('click',e=>{if(st.s!=='edit')return;
+ if(e.target===wys){if(gapAtY(e.clientY))e.preventDefault();return}
+ const b=e.target.closest&&e.target.closest(ATOMB);if(!b||b.parentNode!==wys||e.target.closest('input,button,select,textarea,a,summary,[contenteditable=true]'))return;
+ const r=b.getBoundingClientRect();if(e.clientY<r.top+16){e.preventDefault();gapNear(b,'before')}else if(e.clientY>r.bottom-16){e.preventDefault();gapNear(b,'after')}});
+function fixAtomGaps(){wys.querySelectorAll('a.wl,.imgi').forEach(a=>{if(!a.previousSibling)a.before(document.createTextNode('\u200b'));const nx=a.nextSibling;if(!nx||nx.nodeType!==3)a.after(document.createTextNode('\u200b'))})}
+{const _ld2=loadDoc;loadDoc=function(){_ld2.apply(this,arguments);try{fixAtomGaps()}catch(e){}}}
+/* calculator tables: always fit the card, never scroll sideways */
+function fitCalcTables(root){(root||wys).querySelectorAll('.tw2').forEach(tw=>{const t=tw.querySelector('.ctb');if(!t)return;t.style.fontSize='';let fs=13;while(tw.scrollWidth>tw.clientWidth+1&&fs>8.5){fs-=.5;t.style.fontSize=fs+'px'}})}
+let fitT=0;const fitSoon=()=>{clearTimeout(fitT);fitT=setTimeout(()=>fitCalcTables(),90)};
+new MutationObserver(fitSoon).observe(wys,{childList:true,subtree:true});wys.addEventListener('input',fitSoon);addEventListener('resize',fitSoon);
 
 A_('prevnote','Switch to last opened note','back',()=>jumpPrev(),{short:'Last note'});
 [['edgeL',1],['edgeR',-1]].forEach(([id,dir])=>{const el=$('#'+id);let s=null;
@@ -3460,7 +3523,7 @@ function cellHtml(it,c,r,i,ri,ci){const raw=r[c.k],a=`data-ti="${i}" data-ri="${
  if(c.t==='select')return `<select class="cin" ${a}>${['',...String(c.opts||'').split(',').map(o=>o.trim()).filter(Boolean)].map(o=>`<option${String(o)===String(v)?' selected':''}>${esc(o)}</option>`).join('')}</select>`;
  return `<input class="cin" ${a} ${c.t==='date'?'type="date"':(c.t==='num'||c.t==='cur'||c.t==='pct')?'inputmode="decimal"':''} value="${esc(v)}">`}
 function tableHtml(el,it,i){const ed=el.__edit&&!el.__ro;let h='';
- if(it.view==='cards'){h+='<div class="cards">'+it.rows.map((r,ri)=>`<details class="ccard" data-ri="${ri}"${r._o?' open':''}><summary><b class="cs-a"></b><span class="cs-b"></span><span class="rt"><button data-c="rowdup" data-i="${i}" data-ri="${ri}">${ic('copy',13)}</button><button data-c="rowdel" data-i="${i}" data-ri="${ri}">${ic('x',13)}</button></span></summary><div class="cfields">${it.cols.map((c,ci)=>`<label><span>${esc(c.n)}</span>${cellHtml(it,c,r,i,ri,ci)}</label>`).join('')}</div></details>`).join('')+'</div>'}
+ if(it.view==='cards'){h+='<div class="cards">'+it.rows.map((r,ri)=>`<details class="ccard" data-ri="${ri}"${r._o?' open':''}><summary><b class="cs-a"></b><span class="cs-b"></span><span class="rt"><button data-c="rowdup" data-i="${i}" data-ri="${ri}">${ic('copy',13)}</button><button data-c="rowdel" data-i="${i}" data-ri="${ri}">${ic('x',13)}</button></span></summary><div class="cfields">${it.cols.map((c,ci)=>`<label><span>${esc(c.n)}</span>${cellHtml(it,c,r,i,ri,ci)}</label>`).join('')}</div></details>`).join('')+'</div>'+(it.cols.some(c=>c.agg)?`<div class="cagg">${it.cols.map((c,ci)=>c.agg?`<span><i>${esc(c.n)}</i><b data-agg="${ci}"></b></span>`:'').join('')}</div>`:'')}
  else{h+=`<div class="tw2"><table class="ctb"><thead><tr>${it.cols.map(c=>`<th>${esc(c.n)}</th>`).join('')}<th class="tx"></th></tr></thead><tbody>`+it.rows.map((r,ri)=>`<tr data-ri="${ri}">${it.cols.map((c,ci)=>`<td>${cellHtml(it,c,r,i,ri,ci)}</td>`).join('')}<td class="tx"><button data-c="rowdup" data-i="${i}" data-ri="${ri}" title="Duplicate row">${ic('copy',13)}</button><button data-c="rowdel" data-i="${i}" data-ri="${ri}" title="Delete row">${ic('x',13)}</button></td></tr>`).join('')+'</tbody>'+(it.cols.some(c=>c.agg)?`<tfoot><tr>${it.cols.map((c,ci)=>`<td data-agg="${ci}"></td>`).join('')}<td></td></tr></tfoot>`:'')+'</table></div>'}
  return h+`<div class="cacts"><button class="cadd" data-c="addrow" data-i="${i}">+ Add entry</button><button data-c="tview" data-i="${i}">${it.view==='cards'?'Table view':'Card view'}</button><span class="cmuted">${it.rows.length} rows · formulas copy to every new entry</span></div>`}
 function itemHtml(el,it,i){const ed=el.__edit&&!el.__ro,open=ed&&el.__open===it.id;
@@ -3556,7 +3619,7 @@ function onClick(el,b,e){const c=b.dataset.c,sp=el.__spec,i=+b.dataset.i,it=sp&&
   case'title':return;
   case'edit':el.__edit=!el.__edit;el.__open=null;return renderCalc(el);
   case'recalc':CI.bumpSeed();return updateAll();
-  case'fold':el.__fold=!el.__fold;return renderCalc(el);
+  case'fold':el.__fold=!el.__fold;cfoldSave(el);return renderCalc(el);
   case'dupblk':{const cp=document.createElement('div');cp.className='calc';cp.contentEditable='false';cp.dataset.src=specStr(uniqueSpec(sp));el.after(cp);mountCalcs(wys);schedule();return}
   case'delblk':el.remove();ensureTail();CI.bump();schedule();return;
   case'trace':if(it){go('trace',{id:it.id,nid:noteOf(el).id})}return;
@@ -3613,7 +3676,7 @@ function bindCalc(el){el.addEventListener('click',e=>{const b=e.target.closest('
  el.addEventListener('focusin',e=>{if(e.target.classList&&e.target.classList.contains('cfx')){window.FXT=e.target;showAc(e.target)}});
  el.addEventListener('toggle',e=>{const d=e.target;if(d.classList&&d.classList.contains('ccard')){const t=el.__spec.items[+d.closest('.ci').dataset.i];if(t&&t.rows[+d.dataset.ri]){const r=t.rows[+d.dataset.ri];if(d.open)r._o=1;else delete r._o;el.dataset.src=specStr(el.__spec)}}},true);
  STOP.forEach(ev=>el.addEventListener(ev,e=>e.stopPropagation()))}
-function mountCalcs(root){CI.bump();$$('.calc',root).forEach(el=>{if(el.__m)return;el.__m=true;el.__spec=parseSpec(el.dataset.src||'');el.__ro=!!el.closest('.embed');el.__edit=false;el.__open=null;try{bindCalc(el);renderCalc(el)}catch(err){console.error('calc',err);el.innerHTML='<div class="calc-err">This calculator hit an error: '+esc(err.message)+'</div>'}});try{refreshFx(root)}catch(err){console.error('fx',err)}}
+function mountCalcs(root){CI.bump();$$('.calc',root).forEach(el=>{if(el.__m)return;el.__m=true;el.__spec=parseSpec(el.dataset.src||'');el.__ro=!!el.closest('.embed');el.__fold=cfoldGet(el);el.__edit=false;el.__open=null;try{bindCalc(el);renderCalc(el)}catch(err){console.error('calc',err);el.innerHTML='<div class="calc-err">This calculator hit an error: '+esc(err.message)+'</div>'}});try{refreshFx(root)}catch(err){console.error('fx',err)}}
 function calcDirty(){CI.bump();if(calcDirty.q)return;calcDirty.q=requestAnimationFrame(()=>{calcDirty.q=0;if(wys.hidden||!wys.dataset.id)return;if(wys.querySelector('.calc,.fx'))updateAll()})}
 function wysHtml(){const c=wys.cloneNode(true);c.querySelectorAll('.calc').forEach(x=>x.innerHTML='');c.querySelectorAll('.fx').forEach(x=>x.textContent='');return c.innerHTML}
 /* ---------- inline formula chips ---------- */
