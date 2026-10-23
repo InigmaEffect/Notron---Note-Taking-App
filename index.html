@@ -603,6 +603,8 @@ body.ov:has(#pill[data-s=imgopts]) #scrim{opacity:0}
 .mt.add span{position:static;background:none;color:var(--mu);padding:5px 0 0;font-size:11.5px}.mt.add{color:var(--ac)}
 .mt.sel{outline-color:var(--ac)}.mn{position:absolute;top:6px;right:6px;min-width:22px;height:22px;border-radius:11px;background:var(--ac);color:var(--bg);font-size:12px;display:grid;place-items:center;padding:0 5px}
 .mact{padding:4px 12px 12px;display:flex;flex-direction:column;gap:8px;flex:none}.mact:empty{display:none}.mi{font-size:12px;color:var(--mu)}
+
+html,body{overscroll-behavior:none;overscroll-behavior-y:none}
 </style>
 </head>
 <body>
@@ -1730,7 +1732,7 @@ function applyGlow(){const g=S.set.glow||DEFGLOW,r=document.documentElement.styl
 function applyFs(force){const fsOn=!!document.fullscreenElement||matchMedia('(display-mode: fullscreen)').matches;
  if(force===false){if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});return}
  if(!fsOn&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen({navigationUI:'hide'}).catch(()=>{})}
-addEventListener('pointerup',()=>{if(S.set.fs2&&matchMedia('(display-mode: standalone)').matches&&!typingNow())applyFs()},{once:true});
+addEventListener('pointerup',()=>{if(S.set.fs2&&!document.fullscreenElement&&!matchMedia('(display-mode: fullscreen)').matches&&(matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: minimal-ui)').matches)&&!typingNow())applyFs()});
 function schip(on,a,at,l,st_=''){return `<button class="chip${on?' sel':''}" data-a="${a}" ${at}${st_?` style="${st_}"`:''}>${l}</button>`}
 function setHeadX(){
  const hs=S.set.hs,hrow=i=>`<div class="hsrow"><b>H${i}</b><input type="range" id="hs${i}" min="0.7" max="2.8" step="0.05" value="${hs[i]}" aria-label="Heading ${i} size"><span id="hsv${i}">${(+hs[i]).toFixed(2)}</span></div>`;
@@ -2550,7 +2552,7 @@ A_('graphfrost','Graph: toggle graph behind notes','expand',()=>{const g=GD();g.
 A_('graphview','Graph: next saved view','graph',()=>{const v=GV();if(!v.length)return toast('No saved views yet');const i=v.findIndex(x=>x.id===GD().view),nx=v[(i+1)%v.length];const el=document.createElement('i');el.dataset.g='view';el.dataset.p=nx.id;document.body.appendChild(el);el.click();el.remove()},{short:'Next view'});
 
 /* ============ Notron 3.1: image system ============ */
-const APP_V='1.01 Stable';
+const APP_V='1.02 Stable';
 S.media=new Map();
 Object.assign(I,{im:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-9 9"/>',imcrop:'<path d="M6 2v14a2 2 0 0 0 2 2h14M2 6h14a2 2 0 0 1 2 2v14"/>',imrotr:'<path d="M20 11a8 8 0 1 0-2.4 5.7M20 4v7h-7"/>',imrotl:'<path d="M4 11a8 8 0 1 1 2.4 5.7M4 4v7h7"/>',imflip:'<path d="M12 3v18M8 7 3 12l5 5zM16 7l5 5-5 5z"/>',
  imwi:'<rect x="5" y="9" width="14" height="6" rx="1.5"/><path d="M4 4h16M4 20h16"/>',imwl:'<rect x="3" y="4" width="8" height="8" rx="1.5"/><path d="M14 5h7M14 9h7M3 16h18M3 20h18"/>',imwr:'<rect x="13" y="4" width="8" height="8" rx="1.5"/><path d="M3 5h7M3 9h7M3 16h18M3 20h18"/>',
