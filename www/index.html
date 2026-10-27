@@ -1381,11 +1381,12 @@ wys.addEventListener('keydown',e=>{
  wys.addEventListener('touchmove',e=>{if(!arm)return;const t=e.touches[0];if(!act){if(Math.hypot(t.clientX-arm.x,t.clientY-arm.y)<5)return;act=true}
   if(e.cancelable)e.preventDefault();place(t.clientX,t.clientY);const vb=window.visualViewport?visualViewport.height:innerHeight;if(t.clientY<120)scrollBy(0,-9);else if(t.clientY>vb-150)scrollBy(0,9)},{passive:false});
  const end=()=>{arm=null;act=false};wys.addEventListener('touchend',end);wys.addEventListener('touchcancel',end)})();
+let WYSEDIT=false;wys.addEventListener('pointerdown',()=>{WYSEDIT=EDITF.has(st.s)},true);
 function caretByAtom(a,x){const r=a.getBoundingClientRect(),before=x<r.left+r.width/2,n=before?a.previousSibling:a.nextSibling,s=getSelection(),rg=document.createRange();
  if(n&&n.nodeType===3)rg.setStart(n,before?n.length:0);else before?rg.setStartBefore(a):rg.setStartAfter(a);rg.collapse(true);s.removeAllRanges();s.addRange(rg)}
 wys.addEventListener('click',e=>{
  const a=e.target.closest('a'),em=e.target.closest('.embed');
- if(a&&wys.contains(a)&&(EDITF.has(st.s)||document.activeElement===wys)){/* editing: a tap puts the caret there, it never leaves the note or drops the keyboard */
+ if(a&&wys.contains(a)&&WYSEDIT){/* editing: a tap puts the caret there, it never leaves the note or drops the keyboard */
   if(a.matches('.wl,.tg')){e.preventDefault();caretByAtom(a,e.clientX)}else if(a.href)e.preventDefault();return}
  if(a&&wys.contains(a)){if(a.dataset.wl){e.preventDefault();openLink(a.dataset.wl)}else if(a.dataset.tag){e.preventDefault();go('search',{q:'tag:#'+a.dataset.tag})}else if(a.href){e.preventDefault();window.open(a.href,'_blank','noopener')}return}
  if(em){openLink(em.dataset.embed);return}
@@ -1776,7 +1777,7 @@ R.info=()=>{if(st.s==='info'&&st.d.tab)DOCKTAB=st.d.tab;const tab=DOCKTAB||'outl
    `<div class="sec">Outgoing · ${out.length}</div>`+(out.map(l=>{const t=findByName(l);return t?`<div class="item sm" data-a="open" data-id="${t.id}"><span class="fi">${ic('file',16)}</span><div class="tx"><b>${esc(titleOf(t))}</b><small>${esc(dirOf(t.path)||'Vault')}</small></div></div>`:`<div class="item sm" data-a="mklink" data-p="${esc(l)}"><span class="fi">${ic('plus',16)}</span><div class="tx"><b>${esc(l)}</b><small>Not created yet · tap to create</small></div></div>`}).join('')||'<div class="empty-s" style="padding:10px">No links out. Type [[ to link a note.</div>')}
  else{const words=n.c.trim()?n.c.trim().split(/\s+/).length:0;
   const fm=/^---\n([\s\S]*?)\n---/.exec(n.c);const props=fm?fm[1].split('\n').map(l=>l.match(/^([\w\- ]+):\s*(.*)$/)).filter(Boolean):[];
-  h=`<div class="kv"><span>Words</span><span>${words.toLocaleString()}</span><span>Characters</span><span>${n.c.length.toLocaleString()}</span><span>Reading time</span><span>${Math.max(1,Math.round(words/220))} min</span><span>Created</span><span>${fmtD(n.ct)}</span><span>Modified</span><span>${fmtD(n.mt)}</span><span>Location</span><span>${esc(n.path)}</span>${props.map(p=>`<span>${esc(p[1])}</span><span>${esc(p[2])}</span>`).join('')}</div>`}
+  h=`<div class="kv"><span>Words</span><span>${words.toLocaleString()}</span><span>Characters</span><span>${n.c.length.toLocaleString()}</span><span>Reading time</span><span>${Math.max(1,Math.round(words/220))} min</span><span>Created</span><span>${fmtD(n.ct)}</span><span>Modified</span><span>${fmtD(n.mt)}</span><span>Last opened</span><span>${n.ot?fmtD(n.ot):'—'}</span><span>Location</span><span>${esc(n.path)}</span>${props.map(p=>`<span>${esc(p[1])}</span><span>${esc(p[2])}</span>`).join('')}</div>`}
  box.innerHTML=h;box.classList.remove('pgin');void box.offsetWidth;box.classList.add('pgin')};
 function jump(idx,line){close();const t=curTab(),n=cur();if(!n)return;
  setTimeout(()=>{if(!t.src){const el=wys.querySelectorAll('h1,h2,h3,h4,h5,h6')[idx];el&&scrollTo({top:el.getBoundingClientRect().top+scrollY-84,behavior:'smooth'})}
@@ -2288,7 +2289,7 @@ function revealNote(){endReveal();if(!S.set.reveal||!wys.animate||wys.hidden||ma
   spans.forEach((sp,i)=>{let d;if(mode==='word')d=i*step;else{const tp=sp.offsetTop;if(lt===null||Math.abs(tp-lt)>4){line++;lt=tp}d=Math.min(line*55,950)}
    R_.anims.push(sp.animate([from,{opacity:1,transform:'none',filter:'blur(0)'}],{duration:mode==='word'?520:600,delay:d,easing:ease,fill:'backwards'}))})}
  Promise.all(R_.anims.map(a=>a.finished.catch(()=>0))).then(()=>{if(REV===R_)endReveal()})}
-function showTab(dir=0){const fromHome=document.body.classList.contains('home');endReveal();if(!cur())captureGhost();SIGN=performance.now()+800;const wasMini=MINI;MINI=false;showTab0(dir);if(wasMini)layout();dockRefresh();gSync();
+function showTab(dir=0){const fromHome=document.body.classList.contains('home');endReveal();setTimeout(()=>{const c=cur();if(c&&!document.body.classList.contains('home'))markOpened(c)},0);if(!cur())captureGhost();SIGN=performance.now()+800;const wasMini=MINI;MINI=false;showTab0(dir);if(wasMini)layout();dockRefresh();gSync();
  const n=cur(),t=curTab();if(n&&t&&!t.src&&!S.scrub&&!REVD.has(n.id)){REVD.add(n.id);if(fromHome)setTimeout(()=>{if(cur()&&cur().id===n.id)revealNote()},320);else requestAnimationFrame(()=>requestAnimationFrame(revealNote))}}
 wys.addEventListener('focusin',endReveal);
 A_('reveal','Toggle note reveal animation','zap',()=>{S.set.reveal=!S.set.reveal;saveMeta();toast('Note reveal '+(S.set.reveal?'on':'off'))},{short:'Reveal'});
@@ -2727,7 +2728,7 @@ A_('graphfrost','Graph: toggle graph behind notes','expand',()=>{const g=GD();g.
 A_('graphview','Graph: next saved view','graph',()=>{const v=GV();if(!v.length)return toast('No saved views yet');const i=v.findIndex(x=>x.id===GD().view),nx=v[(i+1)%v.length];const el=document.createElement('i');el.dataset.g='view';el.dataset.p=nx.id;document.body.appendChild(el);el.click();el.remove()},{short:'Next view'});
 
 /* ============ Notron 3.1: image system ============ */
-const APP_V='4.3.2';
+const APP_V='4.4.0';
 S.media=new Map();
 Object.assign(I,{im:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-9 9"/>',imcrop:'<path d="M6 2v14a2 2 0 0 0 2 2h14M2 6h14a2 2 0 0 1 2 2v14"/>',imrotr:'<path d="M20 11a8 8 0 1 0-2.4 5.7M20 4v7h-7"/>',imrotl:'<path d="M4 11a8 8 0 1 1 2.4 5.7M4 4v7h7"/>',imflip:'<path d="M12 3v18M8 7 3 12l5 5zM16 7l5 5-5 5z"/>',
  imwi:'<rect x="5" y="9" width="14" height="6" rx="1.5"/><path d="M4 4h16M4 20h16"/>',imwl:'<rect x="3" y="4" width="8" height="8" rx="1.5"/><path d="M14 5h7M14 9h7M3 16h18M3 20h18"/>',imwr:'<rect x="13" y="4" width="8" height="8" rx="1.5"/><path d="M3 5h7M3 9h7M3 16h18M3 20h18"/>',
@@ -3177,15 +3178,68 @@ async function lazyThumbs(){const box=$('#mgrid');if(!box||!VAULT.on)return;let 
 {const _rm=R.media;R.media=function(){_rm.apply(this,arguments);lazyThumbs()}}
 /* ---- keep in sync with changes made outside (Obsidian on PC, sync tools, file manager) ---- */
 async function vRefresh(force){if(!VAULT.on||VAULT.refreshing)return;if(!force&&Date.now()-VAULT.lastScan<8000)return;VAULT.refreshing=true;
- try{const out={md:[],img:[],dirs:[]};await vWalkP(VAULT.root,'',out);VAULT.lastScan=Date.now();DB.kvSet('idx',{dirs:out.dirs,img:out.img.map(i=>i.path)});const pm=new Map([...S.notes.values()].map(n=>[n.path,n])),seen=new Set();let ch=false;
+ try{const out={md:[],img:[],dirs:[]};await vWalkP(VAULT.root,'',out);VAULT.lastScan=Date.now();DB.kvSet('idx',{dirs:out.dirs,img:out.img.map(i=>i.path)});const pm=new Map([...S.notes.values()].map(n=>[n.path,n])),seen=new Set();let ch=false,nch=0;
   for(const it of out.md){seen.add(it.path);const n=pm.get(it.path);let f;try{f=await it.h.getFile()}catch(e){continue}
    if(!n){const nn={id:uid(),path:it.path,c:await f.text(),mt:f.lastModified,ct:f.lastModified,pin:false,bm:false,_fm:f.lastModified,_sz:f.size};nn._wc=nn.c;S.notes.set(nn.id,nn);VAULT.fsPath.set(nn.id,nn.path);_dbPut.call(DB,nn);ch=true}
-   else if((n._fm!==f.lastModified||n._sz!==f.size)&&!dirty.has(n)){const t=await f.text();n._fm=f.lastModified;n._sz=f.size;if(t!==n.c){n.c=t;n._wc=t;n.mt=f.lastModified;ch=true}_dbPut.call(DB,n)}}
+   else if(n._fm!==f.lastModified||n._sz!==f.size){if(await applyRemote(n,f))nch++}}
   for(const n of [...S.notes.values()]){if(!seen.has(n.path)&&VAULT.fsPath.get(n.id)===n.path&&!dirty.has(n)){S.notes.delete(n.id);VAULT.fsPath.delete(n.id);DB.rawDel(n.id);S.tabs=S.tabs.filter(t=>t.id!==n.id);ch=true}}
   const oldM=new Set([...S.media.values()].map(m=>m.path));if(out.img.length!==oldM.size||out.img.some(i=>!oldM.has(i.path))){for(const it of out.img){if(!oldM.has(it.path)){const id='m'+hash(it.path).toString(36);S.media.set(id,{id,name:baseOf(it.path),path:it.path,type:MIMEX[(it.path.match(/\.(\w+)$/)||[])[1].toLowerCase()]||'image/png',w:0,h:0,size:0,ct:0,th:''})}}const np=new Set(out.img.map(i=>i.path));[...S.media].forEach(([id,m])=>{if(!np.has(m.path))S.media.delete(id)});mediaIdx();ch=true}
   out.dirs.forEach(d=>{if(!S.folders.has(d)){S.folders.add(d);ch=true}});VAULT.dirs=new Set(out.dirs);
-  if(ch){S.struct++;S.ver++;treeDirty=true;if(!S.tabs.length)S.active=0;showTab();toast('Vault updated from disk')}}catch(e){console.warn('refresh',e)}finally{VAULT.refreshing=false}}
-function vWatch(){document.addEventListener('visibilitychange',()=>{if(!document.hidden)vRefresh()});addEventListener('focus',()=>vRefresh());setInterval(()=>{if(!document.hidden)vRefresh()},45000)}
+  if(ch||nch){S.struct++;S.ver++;treeDirty=true;if(!S.tabs.length)S.active=0;if(!EDITF.has(st.s)&&(ch||!cur()))showTab();SYNC.note('Updated from another device')}
+  try{await vMetaSync()}catch(e){}}catch(e){console.warn('refresh',e)}finally{VAULT.refreshing=false;SYNC.lastCheck=Date.now()}}
+/* ================= LIVE SYNC =================
+   Notes are plain files, so a file-sync tool (Syncthing is the recommended one, see SYNC_GUIDE.md) moves them between devices.
+   This layer makes Notron react instantly to what arrives: it watches the folder, merges edits made elsewhere into the note you
+   have open, keeps the older copy of a true conflict, and records created / opened dates per device so nothing is ever overwritten. */
+const SYNC={lastCheck:0,conflicts:0,lt:0,mm:{},meta:null,metaDirty:false,metaT:0,dev:(()=>{let d=localStorage.getItem('notron.dev');if(!d){d=Math.random().toString(36).slice(2,10);localStorage.setItem('notron.dev',d)}return d})()};
+SYNC.name=(NFS?'Phone':'Computer')+' '+SYNC.dev.slice(0,3);
+SYNC.note=m=>{if(Date.now()-SYNC.lt>4000){SYNC.lt=Date.now();toast(m)}};
+const syncOn=()=>{const o=S.set.sync;return !o||o.on!==false};
+/* --- three-way line merge (base = what was last on disk, local = what you have, remote = what arrived) --- */
+function lcsMap(A,B){const n=A.length,m=B.length,map=new Array(n).fill(-1);let s=0;while(s<n&&s<m&&A[s]===B[s]){map[s]=s;s++}let ea=n,eb=m;while(ea>s&&eb>s&&A[ea-1]===B[eb-1]){ea--;eb--;map[ea]=eb}
+ const N=ea-s,M=eb-s;if(!N||!M)return map;if(N*M>8e6)return null;const T=new Uint16Array((N+1)*(M+1)),W=M+1;
+ for(let i=N-1;i>=0;i--)for(let j=M-1;j>=0;j--)T[i*W+j]=A[s+i]===B[s+j]?T[(i+1)*W+j+1]+1:Math.max(T[(i+1)*W+j],T[i*W+j+1]);
+ let i=0,j=0;while(i<N&&j<M){if(A[s+i]===B[s+j]){map[s+i]=s+j;i++;j++}else if(T[(i+1)*W+j]>=T[i*W+j+1])i++;else j++}return map}
+function hunks3(base,x){const m=lcsMap(base,x);if(!m)return null;const H=[];let i=0,j=0;while(i<base.length||j<x.length){if(i<base.length&&j<x.length&&m[i]===j){i++;j++;continue}const i0=i,j0=j;while(i<base.length&&m[i]===-1)i++;while(j<x.length&&(i>=base.length||m[i]!==j))j++;if(i===i0&&j===j0){i++;j++;continue}H.push({s:i0,e:i,t:x.slice(j0,j)})}return H}
+function merge3(base,loc,rem){const B=base.split('\n'),hl=hunks3(B,loc.split('\n')),hr=hunks3(B,rem.split('\n'));if(!hl||!hr)return null;const out=[];let pos=0,i=0,j=0;const take=to=>{while(pos<to)out.push(B[pos++])};
+ while(i<hl.length||j<hr.length){const x=hl[i],y=hr[j];const ov=x&&y&&((x.s<y.e&&y.s<x.e)||x.s===y.s);
+  if(!ov){const h=(x&&(!y||x.s<=y.s))?x:y;take(h.s);out.push(...h.t);pos=h.e;h===x?i++:j++;continue}
+  let s0=Math.min(x.s,y.s),e0=Math.max(x.e,y.e);const lh=[x],rh=[y];i++;j++;
+  for(;;){let g=false;if(i<hl.length&&hl[i].s<e0){lh.push(hl[i]);e0=Math.max(e0,hl[i].e);i++;g=true}if(j<hr.length&&hr[j].s<e0){rh.push(hr[j]);e0=Math.max(e0,hr[j].e);j++;g=true}if(!g)break}
+  const ap=hs=>{const o=[];let q=s0;for(const h of hs){while(q<h.s)o.push(B[q++]);o.push(...h.t);q=h.e}while(q<e0)o.push(B[q++]);return o};
+  const lt=ap(lh),rt=ap(rh);if(lt.join('\n')!==rt.join('\n'))return{conflict:true};take(s0);out.push(...lt);pos=e0}
+ take(B.length);return{text:out.join('\n')}}
+/* --- apply a change that arrived from another device --- */
+function caretOff(root){const s=getSelection();if(!s.rangeCount||!root.contains(s.anchorNode))return null;const r=document.createRange();r.selectNodeContents(root);r.setEnd(s.anchorNode,s.anchorOffset);return r.toString().length}
+function setCaretOff(root,off){let n,acc=0;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);while((n=w.nextNode())){if(acc+n.length>=off){const r=document.createRange();r.setStart(n,off-acc);r.collapse(true);const s=getSelection();s.removeAllRanges();s.addRange(r);return}acc+=n.length}}
+function softReload(n){const c=cur();if(!c||c.id!==n.id)return;const t=curTab(),y=scrollY,src=!!t.src,foc=document.activeElement===(src?ed:wys);let off=null,ss=0;if(foc){if(src)ss=ed.selectionStart;else off=caretOff(wys)}
+ loadDoc();if(foc){if(src){ed.focus();ed.selectionStart=ed.selectionEnd=Math.min(ss,ed.value.length)}else{wys.focus();if(off!==null)setCaretOff(wys,off)}}scrollTo(0,y);topFadeSoon&&topFadeSoon()}
+async function keepConflict(path,text,who){const stamp=new Date().toISOString().replace(/[:T]/g,'-').slice(0,19),nm=path.replace(/\//g,'~').replace(/\.md$/i,'');try{await vq(()=>vWrite('.notron/conflicts/'+nm+'__'+stamp+'__'+who+'.md',text));SYNC.conflicts++}catch(e){}}
+async function applyRemote(n,f){const t=await f.text();n._fm=f.lastModified;n._sz=f.size;if(t===n._wc){_dbPut.call(DB,n);return false}
+ if(t===n.c){n._wc=t;_dbPut.call(DB,n);return false}/* our own save echoing back: nothing to apply */
+ const base=n._wc,local=n.c,open=!!cur()&&cur().id===n.id;
+ if(local===base){n.c=t;n._wc=t;n.mt=f.lastModified;_dbPut.call(DB,n);if(open)softReload(n);return true}
+ const mg=merge3(base,local,t);
+ if(mg&&!mg.conflict){n.c=mg.text;n._wc=t;n.mt=Math.max(n.mt||0,f.lastModified);persist(n);if(open)softReload(n);SYNC.note('Merged edits from another device');return true}
+ const remoteNewer=f.lastModified>=(n.mt||0);await keepConflict(n.path,remoteNewer?local:t,remoteNewer?'this-device':'other-device');
+ if(remoteNewer){n.c=t;n._wc=t;n.mt=f.lastModified;_dbPut.call(DB,n);if(open)softReload(n)}else{n._wc=t;persist(n)}
+ SYNC.note('Edits clashed: kept the newer one, saved the other in Sync settings');return true}
+async function vLiveTick(force){if(!VAULT.on||VAULT.refreshing||document.hidden||!syncOn())return;
+ try{const c=cur();if(c&&!force&&VAULT.fsPath.get(c.id)===c.path){try{const h=await vFile(c.path,false),f=await h.getFile();if(c._fm!==f.lastModified||c._sz!==f.size){if(await applyRemote(c,f)){S.ver++;SYNC.note('Updated from another device')}}}catch(e){}}
+  const gap=force?0:Math.max(3000,Math.min(20000,S.notes.size*8));if(force||Date.now()-VAULT.lastScan>=gap)await vRefresh(true)}catch(e){console.warn('live',e)}finally{SYNC.lastCheck=Date.now()}}
+function vWatch(){const kick=()=>{if(!document.hidden)vLiveTick(true)};document.addEventListener('visibilitychange',kick);addEventListener('focus',kick);setInterval(()=>{if(!document.hidden)vLiveTick()},1500)}
+/* --- created / last-opened dates, one small file per device (no two devices ever write the same file, so they can't clash) --- */
+const metaPath=()=>'.notron/devices/'+SYNC.dev+'.json';
+async function vMetaSync(){if(!VAULT.on)return;if(!SYNC.meta){let m=null;try{m=JSON.parse(await vReadText(metaPath())||'null')}catch(e){}SYNC.meta=m&&m.created?m:{id:SYNC.dev,name:SYNC.name,created:{},opened:{}}}
+ const me=SYNC.meta;let dirtyMeta=false;const cr=new Map(),op=new Map();
+ const add=(m)=>{for(const[k,v]of Object.entries(m.created||{}))cr.set(k,Math.min(cr.get(k)||v,v));for(const[k,v]of Object.entries(m.opened||{}))op.set(k,Math.max(op.get(k)||0,v))};
+ for(const n of S.notes.values()){if(me.created[n.path]===undefined){me.created[n.path]=n.ct||n.mt||Date.now();dirtyMeta=true}}
+ add(me);try{const d=await vDir('.notron/devices',false);for await(const[nm,h]of d.entries()){if(h.kind!=='file'||!/\.json$/.test(nm)||nm===SYNC.dev+'.json')continue;const f=await h.getFile(),key=f.lastModified+':'+f.size;let o=SYNC.mm[nm];if(!o||o.k!==key){try{o={k:key,m:JSON.parse(await f.text())}}catch(e){continue}SYNC.mm[nm]=o}add(o.m)}}catch(e){}
+ for(const n of S.notes.values()){const c=cr.get(n.path),o=op.get(n.path);if(c&&c<(n.ct||Infinity))n.ct=c;if(o&&o>(n.ot||0))n.ot=o}
+ if(dirtyMeta)vMetaSoon()}
+function vMetaSoon(){SYNC.metaDirty=true;clearTimeout(SYNC.metaT);SYNC.metaT=setTimeout(async()=>{if(!VAULT.on||!SYNC.meta)return;SYNC.metaDirty=false;SYNC.meta.updated=Date.now();vq(()=>vWrite(metaPath(),JSON.stringify(SYNC.meta)))},8000)}
+function markOpened(n){if(!n||!VAULT.on)return;n.ot=Date.now();if(!SYNC.meta)return;SYNC.meta.opened[n.path]=n.ot;vMetaSoon()}
+addEventListener('pagehide',()=>{if(SYNC.metaDirty&&SYNC.meta&&VAULT.on){try{vq(()=>vWrite(metaPath(),JSON.stringify(SYNC.meta)))}catch(e){}}});
 /* ---- opening a vault ---- */
 function vProg(msg){let el=$('#vload');if(!el){el=document.createElement('div');el.id='vload';document.body.appendChild(el)}el.textContent=msg;el.style.display=msg?'flex':'none'}
 async function openVault(rec,ask){const h=rec.handle;let p;try{p=await h.queryPermission({mode:'readwrite'});if(p!=='granted'&&ask)p=await h.requestPermission({mode:'readwrite'})}catch(e){return 'error'}
@@ -3223,12 +3277,22 @@ function seedVault(){createNote('','Welcome','# Welcome to Notron\n\nThis vault 
 function setVaultPage(){if(VAULT.on&&!VAULT.ext)vLoadExt().then(()=>{if(st.s==='settings'&&st.d.page==='vault')R.settings()});
  const x=VAULT.ext||{themes:[],snippets:[],plugins:[]},a=VAULT.cfg.appearance||{},en=new Set(a.enabledCssSnippets||[]);
  if(!VAULT.on)return `<div class="sgroup"><div class="sh">Storage</div><p class="note">Notes are stored inside the app on this device. Open a folder to keep them as real Markdown files that Obsidian can use.</p><div class="chips"><button class="chip sel" data-a="vswitch">Open a folder as vault</button></div></div>`;
- return `<div class="sgroup"><div class="sh">Vault folder</div><p class="note"><b>${esc(VAULT.name)}</b> · ${plural(S.notes.size,'note')} · ${plural(S.folders.size,'folder')} · ${plural(S.media.size,'image')}<br>Settings are saved in .obsidian/notron.json inside the folder.</p>
+ const so=syncOn(),ago=SYNC.lastCheck?Math.max(0,Math.round((Date.now()-SYNC.lastCheck)/1000))+'s ago':'not yet';
+ const syncG=`<div class="sgroup"><div class="sh">Sync between devices</div><p class="note">${so?'Live':'Paused'} · this device: <b>${esc(SYNC.name)}</b> · last check ${ago}<br>${SYNC.conflicts?plural(SYNC.conflicts,'older copy')+' kept this session':'No clashes so far'}. Changes made on another device show up here within a few seconds; edits on both sides are merged, and if the same lines were changed the newer edit wins and the other is saved.</p>
+  <div class="chips">${schip(so,'vlive','','Live sync')}<button class="chip" data-a="vsync">Sync now</button><button class="chip" data-a="vconf">Older copies…</button><button class="chip" data-a="vrebuild">Rebuild from disk</button></div>
+  <p class="note">Use a file-sync app such as Syncthing on the vault folder to move files between devices (see SYNC_GUIDE.md). Notron does the rest.</p><div id="vconflist"></div></div>`;
+ return syncG+`<div class="sgroup"><div class="sh">Vault folder</div><p class="note"><b>${esc(VAULT.name)}</b> · ${plural(S.notes.size,'note')} · ${plural(S.folders.size,'folder')} · ${plural(S.media.size,'image')}<br>Settings are saved in .obsidian/notron.json inside the folder.</p>
   <div class="chips"><button class="chip" data-a="vreload">Reload from disk</button><button class="chip" data-a="vswitch">Switch vault</button><button class="chip" data-a="vimport">Copy in-app notes here</button></div></div>
  <div class="sgroup"><div class="sh">CSS snippets</div>${x.snippets.length?`<div class="chips">${x.snippets.map(s=>schip(en.has(s),'vsnip',`data-p="${esc(s)}"`,esc(s))).join('')}</div>`:'<p class="note">Put .css files in .obsidian/snippets to see them here.</p>'}</div>
  <div class="sgroup"><div class="sh">Themes</div>${x.themes.length?`<div class="chips">${schip(!a.cssTheme,'vtheme','data-p=""','None')}${x.themes.map(s=>schip(a.cssTheme===s,'vtheme',`data-p="${esc(s)}"`,esc(s))).join('')}</div>`:'<p class="note">Themes found in .obsidian/themes appear here.</p>'}<p class="note">Obsidian themes are applied as extra CSS on top of Notron.</p></div>
  <div class="sgroup"><div class="sh">Community plugins</div>${x.plugins.length?x.plugins.map(p=>`<p class="note">${esc(p.name)} ${esc(p.v)} · not supported yet</p>`).join(''):'<p class="note">None found. Plugin support will arrive in a later version.</p>'}</div>`}
-Object.assign(A,{vreload:()=>{toast('Reading the folder…');vRefresh(true)},vswitch:()=>{localStorage.removeItem('notron.mode');localStorage.removeItem('notron.last');location.reload()},
+Object.assign(A,{vlive:()=>{S.set.sync=Object.assign({},S.set.sync,{on:!syncOn()});saveMeta();st.d.keep=true;R.settings();toast(syncOn()?'Live sync on':'Live sync paused')},
+ vsync:async()=>{toast('Checking for changes…');const t0=Date.now();await vLiveTick(true);toast('Up to date · checked in '+(Date.now()-t0)+' ms');st.d.keep=true;R.settings()},
+ vrebuild:async()=>{if(!confirm('Re-read every note from the folder? Anything not yet written to disk is dropped.'))return;toast('Rebuilding…');try{await DB.kvSet('idx',null);for(const n of S.notes.values())DB.rawDel(n.id)}catch(e){}setTimeout(()=>location.reload(),300)},
+ vconf:async()=>{const box=document.getElementById('vconflist');if(!box)return;const items=[];try{const d=await vDir('.notron/conflicts',false);for await(const[nm,h]of d.entries())if(h.kind==='file')items.push(nm)}catch(e){}
+  box.innerHTML=items.length?'<p class="note">Tap one to restore it as a note:</p><div class="chips">'+items.sort().reverse().slice(0,40).map(nm=>`<button class="chip" data-a="vconfopen" data-p="${esc(nm)}">${esc(nm.replace(/\.md$/,'').slice(0,46))}</button>`).join('')+'</div>':'<p class="note">No older copies saved.</p>'},
+ vconfopen:async el=>{const nm=el.dataset.p;const t=await vReadText('.notron/conflicts/'+nm);if(t==null)return toast('Could not read that copy');const base=nm.replace(/__.*$/,'').replace(/~/g,'/');const note=createNote('Recovered copies',base.split('/').pop()+' (recovered)',t);toast('Restored into Recovered copies');if(note)openNote(note.id)},
+ vreload:()=>{toast('Reading the folder…');vRefresh(true)},vswitch:()=>{localStorage.removeItem('notron.mode');localStorage.removeItem('notron.last');location.reload()},
  vsnip:el=>{const s=el.dataset.p,a=VAULT.cfg.appearance||{},l=new Set(a.enabledCssSnippets||[]);l.has(s)?l.delete(s):l.add(s);vSetAppearance({enabledCssSnippets:[...l]}).then(()=>{st.d.keep=true;R.settings()})},
  vtheme:el=>{vSetAppearance({cssTheme:el.dataset.p}).then(()=>{st.d.keep=true;R.settings()})},
  vimport:async()=>{const n=await legacyImport();toast(n?('Copied '+plural(n,'note')+' into the vault'):'Nothing to copy')}});
