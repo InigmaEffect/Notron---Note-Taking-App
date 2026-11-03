@@ -1,0 +1,8 @@
+{
+  "appId": "app.notron.notes",
+  "appName": "Notron",
+  "webDir": "www",
+  "backgroundColor": "#0c0d11",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false, "backgroundColor": "#0c0d11" }
+}
