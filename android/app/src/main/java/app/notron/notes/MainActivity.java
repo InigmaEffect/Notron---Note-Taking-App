@@ -1,5 +1,6 @@
 package app.notron.notes;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +34,36 @@ public class MainActivity extends BridgeActivity {
             ws.setDisplayZoomControls(false);
         }
         hideSystemBars();
+        captureShare(getIntent(), false);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        captureShare(intent, true);
+    }
+
+    /** Text / links shared from other apps (Share > Notron) are kept for the web app to pick up. */
+    private void captureShare(Intent intent, boolean live) {
+        try {
+            if (intent == null || !Intent.ACTION_SEND.equals(intent.getAction())) return;
+            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+            if (text == null || text.length() == 0) return;
+            String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+            NotronFSPlugin.pendingSubject = subject == null ? "" : subject;
+            NotronFSPlugin.pendingText = text;
+            intent.setAction(Intent.ACTION_MAIN);
+            if (live && getBridge() != null && getBridge().getWebView() != null) {
+                final android.webkit.WebView wv = getBridge().getWebView();
+                wv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        wv.evaluateJavascript("window.__shared&&window.__shared()", null);
+                    }
+                });
+            }
+        } catch (Exception ignored) {
+        }
     }
 
     @Override

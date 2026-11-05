@@ -644,8 +644,8 @@ body.kboff .editb::after{content:'';position:absolute;right:8px;top:8px;width:7p
 .winp{width:100%;box-sizing:border-box;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);border-radius:18px;padding:15px 16px;font:600 15px var(--font-ui);outline:none;-webkit-user-select:text;user-select:text}.winp:focus{border-color:var(--ac)}
 .wform{display:flex;flex-direction:column;gap:10px}
 /* ---------------- Slipbox ---------------- */
-#slip{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
-#slip.on{display:flex}
+#slip,#tasks{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);visibility:hidden;opacity:0;transform:translateY(34px) scale(.985);transition:opacity .28s ease,transform .46s var(--ease),visibility 0s .46s;pointer-events:none}
+#slip.on,#tasks.on{visibility:visible;opacity:1;transform:none;transition:opacity .28s ease,transform .46s var(--ease),visibility 0s 0s;pointer-events:auto}
 .sl-h{display:flex;align-items:center;gap:10px;padding:12px 14px 6px}.sl-h b{font-size:calc(20px*var(--us,1));font-weight:700;letter-spacing:-.01em}.sl-n{color:var(--mu);font-size:13px;flex:1}
 .sl-ib{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);font-size:16px;cursor:pointer;display:grid;place-items:center}
 .sl-new{margin-left:auto;border:0;background:var(--ac);color:var(--bg);border-radius:99px;padding:9px 16px;font-weight:700;font-size:14px;cursor:pointer}
@@ -666,14 +666,64 @@ body.kboff .editb::after{content:'';position:absolute;right:8px;top:8px;width:7p
 .sl-row{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);border-radius:16px;padding:12px 14px;margin-bottom:8px;text-align:left;cursor:pointer;font:inherit}.sl-row span{color:var(--mu);font-size:12px}.sl-row.sel{border-color:var(--ac);background:var(--acs)}
 .sl-empty{color:var(--mu);text-align:center;padding:44px 22px;line-height:1.55}
 .sl-mk{padding:6px 14px}.sl-mk label{display:block;color:var(--mu);font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:8px 2px 6px}.sl-mk input{width:100%;box-sizing:border-box;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);border-radius:16px;padding:12px 14px;font:inherit;outline:none}
-#slipcap{position:fixed;inset:0;z-index:80;display:none;flex-direction:column;justify-content:flex-end}#slipcap.on{display:flex}
-.sc-b{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+#slipcap,#tkd{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;justify-content:flex-end;visibility:hidden;pointer-events:none;transition:visibility 0s .42s}#slipcap.on,#tkd.on{visibility:visible;pointer-events:auto;transition:visibility 0s 0s}
+.sc-b,.tkd-b{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .35s ease}#slipcap.on .sc-b,#tkd.on .tkd-b{opacity:1}
 .sc-p{position:relative;background:var(--bg);border-top:1px solid var(--pillb);border-radius:26px 26px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));box-shadow:0 -20px 60px rgba(0,0,0,.4)}
 .sc-h{display:flex;justify-content:space-between;align-items:center;padding-bottom:8px}.sc-h b{font-size:16px}
 .sc-par{background:var(--acs);color:var(--ac);border-radius:12px;padding:8px 12px;font-size:13px;margin-bottom:8px}
 #sctx{width:100%;box-sizing:border-box;min-height:110px;max-height:40vh;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);border-radius:18px;padding:12px 14px;font:inherit;font-size:calc(16px*var(--us,1));outline:none;resize:none}
 .sc-im{display:flex;gap:8px;flex-wrap:wrap;padding:8px 0 0}.sc-im div{position:relative}.sc-im img{width:56px;height:56px;border-radius:12px;object-fit:cover;display:block}.sc-im b{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--ac);color:var(--bg);font-size:12px;display:grid;place-items:center;cursor:pointer}
 .sc-a{display:flex;gap:8px;align-items:center;padding-top:10px}.sc-a .sp{flex:1}
+.sc-p,.tkd-p{transform:translateY(105%);transition:transform .46s var(--ease)}#slipcap.on .sc-p,#tkd.on .tkd-p{transform:none}
+/* tasks */
+.tk-top{display:flex;align-items:center;gap:10px;padding:12px 14px 4px}.tk-ttl{display:flex;align-items:center;gap:6px;flex:1;min-width:0}.tk-ttl b{font-size:calc(22px*var(--us,1));font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tk-ttl input{flex:1;min-width:0;border:0;border-bottom:2px solid var(--ac);background:transparent;color:var(--tx);font-weight:700;font-size:calc(22px*var(--us,1));font-family:inherit;outline:none;padding:2px 0}
+.tk-ed{border:0;background:none;color:var(--mu);font-size:15px;padding:6px;cursor:pointer}
+.tk-sum{padding:0 16px 6px;color:var(--mu);font-size:13px}.tk-sum b{color:var(--tx)}.tk-sum .od{color:#ff6b6b;font-style:normal;font-weight:600}
+.tk-f{display:flex;gap:8px;padding:5px 14px;flex-wrap:wrap;align-items:center}.tk-gl{color:var(--mu);font-size:12px;padding-right:2px}
+.tk-l{flex:1;overflow-y:auto;padding:4px 12px 14px;overscroll-behavior:contain}
+.tk-h{display:flex;align-items:center;gap:8px;padding:14px 6px 6px;cursor:pointer;color:var(--mu);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.tk-h b{color:var(--tx);font-size:13px;letter-spacing:.02em;text-transform:none}.tk-h span{background:var(--s2);border-radius:99px;padding:1px 8px}.tk-h i{margin-left:auto;font-style:normal;transition:transform .3s var(--ease)}.tk-h.c i{transform:rotate(-90deg)}
+.tk-r{position:relative;margin:0 0 7px;border-radius:18px;background:var(--s1);border:1px solid var(--pillb);overflow:hidden;transition:background .2s}.tk-r[data-sw=r]{background:color-mix(in srgb,#3ddc84 28%,var(--s1))}.tk-r[data-sw=l]{background:color-mix(in srgb,var(--ac) 22%,var(--s1))}
+.tk-r.sub{margin-left:26px;background:var(--bg)}.tk-sw{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--s1);touch-action:pan-y;transition:transform .3s var(--ease)}.tk-r.sub .tk-sw{background:var(--bg)}
+.tk-cb{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--mu);background:transparent;color:var(--bg);font-size:13px;font-weight:800;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .2s,transform .2s var(--ease)}.tk-cb.p1{border-color:#ff5a5a}.tk-cb.p2{border-color:#ffa94d}.tk-cb.p3{border-color:#5aa2ff}.tk-cb.on{background:var(--ac);border-color:var(--ac);transform:scale(1.08)}
+.tk-m{flex:1;min-width:0;cursor:pointer}.tk-t{font-size:calc(15.5px*var(--us,1));line-height:1.35;overflow-wrap:anywhere}.tk-r.dn .tk-t{color:var(--mu);text-decoration:line-through}.tk-s{display:flex;flex-wrap:wrap;gap:6px;padding-top:5px}
+.tk-c{font-size:11.5px;color:var(--mu);background:var(--s2);border-radius:99px;padding:2px 9px}.tk-c.od{color:#ff6b6b;background:color-mix(in srgb,#ff6b6b 14%,transparent)}.tk-c.st-doing{color:#5aa2ff}.tk-c.st-wait{color:#ffa94d}
+.tk-r.out{animation:tkOut .28s ease forwards}
+.tk-pv{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px}.tk-pv:not(:empty){padding-bottom:6px}
+.tk-add{display:flex;gap:8px;padding:8px 12px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--pillb);background:var(--bg)}.tk-add input{flex:1;min-width:0;box-sizing:border-box;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);border-radius:18px;padding:13px 15px;font:inherit;font-size:calc(16px*var(--us,1));outline:none}
+.gb{position:relative}.tkbd{position:absolute;top:-3px;right:-3px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:var(--ac);color:var(--bg);font-weight:700;font-size:10.5px;line-height:17px;text-align:center;font-style:normal}.tkbd[hidden]{display:none}.tkbd.bump{animation:bump .5s var(--ease)}
+.tkd-p{position:relative;background:var(--bg);border-top:1px solid var(--pillb);border-radius:26px 26px 0 0;max-height:88%;display:flex;flex-direction:column;box-shadow:0 -20px 60px rgba(0,0,0,.4)}
+.tkd-h{display:flex;align-items:center;gap:12px;padding:16px 14px 8px}.tkd-t{flex:1;min-width:0;border:0;background:transparent;color:var(--tx);font-weight:700;font-size:calc(19px*var(--us,1));font-family:inherit;outline:none}
+.tkd-s{overflow-y:auto;padding:0 16px calc(16px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain}.tkd-s label{display:block;color:var(--mu);font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:14px 0 7px}
+.tkd-dt{display:flex;gap:8px;padding-top:8px}.tkd-dt input,.tkd-i{box-sizing:border-box;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);border-radius:14px;padding:11px 13px;font:inherit;outline:none;flex:1;min-width:0;width:100%}textarea.tkd-i{resize:none}
+.tkd-sub{display:flex;align-items:center;gap:10px;padding:7px 0}.tkd-sub .dn{color:var(--mu);text-decoration:line-through}.tkd-sub span{flex:1;overflow-wrap:anywhere}.tk-x{border:0;background:none;color:var(--mu);font-size:18px;padding:4px 8px;cursor:pointer}.tkd-add{display:flex;gap:8px;padding-top:6px}.tkd-add .chip{flex:none}
+.tkd-log{color:var(--mu);font-size:12px;line-height:1.7;padding-top:14px}
+.tkset{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 2px}.tkset span{font-size:13.5px;flex:1}.tkset input{flex:none;width:auto;max-width:150px;box-sizing:border-box;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);border-radius:12px;padding:9px 11px;font:inherit}
+.adrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 0}.adrow b{display:block}.adrow span{display:block;color:var(--mu);font-size:12px;padding-top:2px}
+/* voice */
+.sc-v{display:inline-flex;align-items:center;gap:6px;background:var(--acs);color:var(--ac);border-radius:99px;padding:4px 6px 4px 11px;font-size:13px}.sc-v b{cursor:pointer;width:18px;height:18px;border-radius:50%;background:var(--ac);color:var(--bg);display:grid;place-items:center;font-size:12px}
+.chip.rec{background:#ff4d4d!important;color:#fff!important;animation:recPulse 1.2s ease-in-out infinite}
+.embed.aud{border:1px solid var(--pillb);background:var(--s1);border-radius:16px;padding:10px 12px}.embed.aud .aud-n{font-size:12px;color:var(--mu);padding-bottom:6px}.embed.aud audio{width:100%;height:38px}.embed.aud.miss audio{display:none}
+/* plus long-press menu */
+#plusm{position:fixed;z-index:70;display:flex;flex-direction:column;gap:7px;align-items:flex-end;visibility:hidden;pointer-events:none}#plusm.on{visibility:visible;pointer-events:auto}
+#plusm button{display:flex;align-items:center;gap:10px;border:1px solid var(--pillb);background:var(--s1);color:var(--tx);border-radius:99px;padding:11px 18px 11px 13px;font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,.35);opacity:0;transform:translateY(14px) scale(.9);transition:opacity .22s,transform .4s var(--ease)}
+#plusm.on button{opacity:1;transform:none}#plusm.on button:nth-last-child(1){transition-delay:0ms}#plusm.on button:nth-last-child(2){transition-delay:40ms}#plusm.on button:nth-last-child(3){transition-delay:80ms}#plusm.on button:nth-last-child(4){transition-delay:120ms}#plusm.on button:nth-last-child(5){transition-delay:160ms}#plusm button span{width:22px;text-align:center;color:var(--ac);font-size:15px}
+/* slipbox: thoughts small and dim (only inside the slipbox; in the note they stay normal) */
+.sl-tho{font-size:12.5px;color:var(--mu);opacity:.85;border-left:2px solid var(--pillb);padding:2px 0 2px 10px;margin:7px 0}.sl-tho i{font-style:normal;font-size:11px;opacity:.8;margin-right:6px}
+/* motion */
+@keyframes slIn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes slDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes chipIn{from{opacity:0;transform:translateY(6px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes slSlide{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes tkOut{0%{opacity:1;transform:none;max-height:120px}55%{opacity:0;transform:translateX(40px);max-height:120px}100%{opacity:0;transform:translateX(40px);max-height:0;margin:0;border-width:0}}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+@keyframes recPulse{50%{opacity:.65}}
+.sl-l.fresh>.sl-c,.sl-l.fresh>.sl-d,#tasks.fresh .tk-r{animation:slIn .5s var(--ease) both}
+#sllist.fresh>:nth-child(1){animation-delay:0ms}#sllist.fresh>:nth-child(2){animation-delay:32ms}#sllist.fresh>:nth-child(3){animation-delay:64ms}#sllist.fresh>:nth-child(4){animation-delay:96ms}#sllist.fresh>:nth-child(5){animation-delay:128ms}#sllist.fresh>:nth-child(6){animation-delay:160ms}#sllist.fresh>:nth-child(7){animation-delay:192ms}#sllist.fresh>:nth-child(8){animation-delay:224ms}#sllist.fresh>:nth-child(9){animation-delay:256ms}#sllist.fresh>:nth-child(10){animation-delay:288ms}#sllist.fresh>:nth-child(11){animation-delay:320ms}#sllist.fresh>:nth-child(12){animation-delay:352ms}#sllist.fresh>:nth-child(13){animation-delay:384ms}#sllist.fresh>:nth-child(14){animation-delay:416ms}
+.sl-c.ex .sl-body{animation:slDown .42s var(--ease) both}.sl-c.ex .sl-act .chip{animation:chipIn .4s var(--ease) both}
+#slpick>*{animation:slSlide .38s var(--ease) both}
+.chip,.gb,.sl-ib,.sl-new,.sl-row{transition:transform .18s var(--ease),background .22s,color .22s,border-color .22s,opacity .22s}.chip:active,.gb:active,.sl-ib:active,.sl-new:active{transform:scale(.94)}.sl-row:active{transform:scale(.985)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important}}
+
 
 /* title lives in the note; the top bar title fades in only once the note title has scrolled away */
 #tname{transition:opacity .18s linear,transform .22s ease;opacity:0;pointer-events:none}
@@ -904,7 +954,7 @@ function pathMap(){if(pmap&&pmapV===S.struct)return pmap;pmap=new Map();for(cons
 const findByName=t=>nameMap().get(t.toLowerCase());
 const dirty=new Set();let flushT=0,metaT=0;
 function persist(n){dirty.add(n);clearTimeout(flushT);flushT=setTimeout(flush,450)}
-function touch(n){n.mt=Date.now();S.ver++;persist(n)}
+function touch(n){n.mt=Date.now();S.ver++;persist(n);if(typeof TK!=='undefined'&&TK.bySrc&&TK.bySrc.has(n.id))tkNoteChanged(n)}
 function flush(){for(const n of dirty)DB.put(n);dirty.clear()}
 function saveMeta(){clearTimeout(metaT);metaT=setTimeout(()=>DB.kvSet('meta',{tabs:S.tabs.map(t=>({id:t.id,src:!!t.src})),active:S.active,expanded:[...S.expanded],folders:[...S.folders],set:S.set,order:S.order,focus:S.focus,views:S.views,view:S.view,fmax:S.fmax,recent:S.recent,prevId:S.prevId,pillLock:S.pillLock}),300)}
 function bump(){S.struct++;S.ver++;treeDirty=true;saveMeta()}
@@ -974,7 +1024,7 @@ function listHtml(items){let h='';const st=[];
  while(st.length)h+='</li></'+st.pop().tag+'>';return h}
 const CAL={note:'lightbulb',tip:'lightbulb',info:'info',warning:'callout',danger:'callout',important:'star',todo:'task',quote:'quote'};
 let RD=0;
-function embedHtml(name){const n=findByName(name.trim());let inner;
+function embedHtml(name){if(AUDX.test(name.trim()))return `<div class="embed aud" contenteditable="false" data-embed="${esc(name.trim())}"><div class="aud-n">🎙 ${esc(name.trim().replace(/\.[a-z0-9]+$/i,''))}</div><audio controls preload="none"></audio></div>`;const n=findByName(name.trim());let inner;
  if(!n||RD>1)inner=`<div class="et">${esc(name)}${n?'':' · not found'}</div>`;
  else{RD++;try{inner=`<div class="et">${esc(titleOf(n))}</div>`+render(splitFm(n.c).body.split('\n').slice(0,40).join('\n'))}finally{RD--}}
  return `<div class="embed" contenteditable="false" data-embed="${esc(name.trim())}">${inner}</div>`}
@@ -1426,7 +1476,7 @@ wys.addEventListener('click',e=>{
  if(a&&wys.contains(a)&&WYSEDIT){/* editing: a tap puts the caret there, it never leaves the note or drops the keyboard */
   if(a.matches('.wl,.tg')){e.preventDefault();caretByAtom(a,e.clientX)}else if(a.href)e.preventDefault();return}
  if(a&&wys.contains(a)){if(a.dataset.wl){e.preventDefault();openLink(a.dataset.wl)}else if(a.dataset.tag){e.preventDefault();go('search',{q:'tag:#'+a.dataset.tag})}else if(a.href){e.preventDefault();window.open(a.href,'_blank','noopener')}return}
- if(em){openLink(em.dataset.embed);return}
+ if(em){if(em.classList.contains('aud'))return;openLink(em.dataset.embed);return}
  const li=e.target.closest('li.task');
  if(li&&e.target===li){const r=li.getBoundingClientRect(),fs=parseFloat(getComputedStyle(li).fontSize);if(e.clientX-r.left<fs*1.5&&e.clientY-r.top<fs*2){snap();li.classList.toggle('done');schedule();navigator.vibrate&&navigator.vibrate(8)}}});
 function texLite(t){const SUB='₀₁₂₃₄₅₆₇₈₉',SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','-':'⁻','+':'⁺'};
@@ -2694,7 +2744,7 @@ function gSync(){const n=cur(),home=!n||HOME,g=GD(),b=document.body,was=HG.wasDo
  if(home){if(!HG.built||was||HG.sig!==S.notes.size+':'+S.struct+':'+HG.rev)hgBuild();hgStart(60);if(was)frostOut();else if(!HG.out)frost.classList.remove('on')}
  else{if(!was&&HG.inited)frostIn();else frost.classList.add('on');
   if(vis&&g.frost.anim)hgStart(30);else{clearTimeout(HG.stopT);HG.stopT=setTimeout(()=>{if(!document.body.classList.contains('home')&&!GD().frost.anim)hgStop()},1100)}}
- if(n)HG.lastId=n.id;HG.inited=true;gBar();topFadeSoon()}
+ if(n)HG.lastId=n.id;HG.inited=true;gBar();topFadeSoon();if(typeof tkBadge==='function'&&typeof TK!=='undefined')tkBadge()}
 let TFQ=0;function topFadeSoon(){if(TFQ)return;TFQ=requestAnimationFrame(()=>{TFQ=0;topFade()})}
 function topFade(){const tn=document.getElementById('tname');if(!tn)return;let p=0;if(!document.body.classList.contains('home')&&cur()&&!docbox.hidden){const tp=document.getElementById('top'),edge=(tp?tp.getBoundingClientRect().bottom:56)-6,r=titleEl.getBoundingClientRect();p=Math.max(0,Math.min(1,(edge-r.bottom+14)/40))}
  tn.style.opacity=p.toFixed(3);tn.style.transform='translateY('+((1-p)*5).toFixed(1)+'px)';tn.style.pointerEvents=p>.55?'auto':'none'}
@@ -2703,7 +2753,7 @@ function setHome(v){if(v)captureGhost();HOME=v&&S.tabs.length>0;docbox.hidden=!c
 /* graph UI: view bar + settings panel */
 const gset=(path,v)=>{const g=GD(),k=path.split('.');let o=g;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v};
 const gget=path=>path.split('.').reduce((o,k)=>o&&o[k],GD());
-function gBar(){const v=GV(),cu=GD().view;gb.innerHTML=`<div class="gvc"><button class="gv${!cu?' sel':''}" data-g="view" data-p="">All notes</button>${v.map(x=>`<button class="gv${cu===x.id?' sel':''}" data-g="view" data-p="${x.id}">${esc(x.name)}</button>`).join('')}</div><button class="gb" data-g="slipcap" aria-label="Quick capture">${SLI.pen}</button><button class="gb" data-g="slip" aria-label="Slipbox">${SLI.box}</button><button class="gb${st.s==='gset'?' on':''}" data-g="panel" aria-label="Graph settings">${ic('gear',20)}</button>`}
+function gBar(){const v=GV(),cu=GD().view;gb.innerHTML=`<div class="gvc"><button class="gv${!cu?' sel':''}" data-g="view" data-p="">All notes</button>${v.map(x=>`<button class="gv${cu===x.id?' sel':''}" data-g="view" data-p="${x.id}">${esc(x.name)}</button>`).join('')}</div>${addonOn('slip')?`<button class="gb" data-g="slipcap" aria-label="Quick capture">${SLI.pen}</button><button class="gb" data-g="slip" aria-label="Slipbox">${SLI.box}</button>`:''}${addonOn('tasks')?`<button class="gb" data-g="tasks" aria-label="Tasks">${SLI.chk}<i class="tkbd" hidden></i></button>`:''}<button class="gb${st.s==='gset'?' on':''}" data-g="panel" aria-label="Graph settings">${ic('gear',20)}</button>`}
 function gPanel(){const host=$('#gsetBody');if(!host)return;const g=GD(),keep=host.scrollTop;
  const sec=(t,body)=>`<details data-sec="${t}"${HG.open.has(t)?' open class="op"':''}><summary>${t}</summary><div class="gsb">${body}</div></details>`;
  const rng=(l,p,mn,mx,st)=>`<label class="gr"><span>${l}</span><input type="range" data-gi="${p}" min="${mn}" max="${mx}" step="${st}" value="${gget(p)}"><b>${gget(p)}</b></label>`;
@@ -2747,6 +2797,7 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
  else if(k==='hubmark'){const n=cur();if(!n)toast('Open a note first, then mark it');else{const c=g.hub.centers||(g.hub.centers=[]),i=c.indexOf(n.id);if(i>=0)c.splice(i,1);else c.push(n.id);g.hub.on=true;rebuild();HG.alpha=Math.max(HG.alpha,.8);toast(i>=0?'Center removed':'“'+titleOf(n)+'” is now a graph center')}}
  else if(k==='hubdel'){g.hub.centers=(g.hub.centers||[]).filter(x=>x!==p);rebuild();HG.alpha=Math.max(HG.alpha,.8)}
  else if(k==='slip')slipOpen();
+ else if(k==='tasks')tkOpen();
  else if(k==='slipcap')slipCaptureOpen();
  else if(k==='reheat'){HG.alpha=1;hgKick()}
  else if(k==='fit'){hgFit();hgKick()}});
@@ -2773,24 +2824,25 @@ A_('graphview','Graph: next saved view','graph',()=>{const v=GV();if(!v.length)r
 /* ================= SLIPBOX (prototype) =================
    A zero-friction dump for loose ideas. Every entry is a real note in the Slipbox folder (so it shows on the graph and syncs),
    with a UI for sorting through them: expand, add a thought, build on an idea, append into an existing note, make it a note, move, delete. */
-const SLIP={open:false,cap:false,q:'',flt:'all',exp:null,view:'list',think:null,pickQ:'',tgt:null,imgs:[],parent:null,arm:null,mk:null};
+const SLIP={voice:[],recT:0,fresh:false,open:false,cap:false,q:'',flt:'all',exp:null,view:'list',think:null,pickQ:'',tgt:null,imgs:[],parent:null,arm:null,mk:null};
 const slipDir=()=>(((S.set.slip&&S.set.slip.folder)||'Slipbox').replace(/^\/+|\/+$/g,''))||'Slipbox';
 const isSlip=n=>n.path.startsWith(slipDir()+'/')&&/\.md$/i.test(n.path);
 const slipPlain=b=>b.replace(/!\[\[[^\]]*\]\]/g,' ').replace(/\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]*))?\]\]/g,(m,a,c)=>c||a).replace(/[#*_`>~=]+/g,'').replace(/\s+/g,' ').trim();
-const SLI={pen:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',box:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l2.2-7h11.6L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h5l1 2h4l1-2h5"/></svg>'};
+const SLI={chk:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.6 2.6L16 9.6"/></svg>',pen:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',box:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l2.2-7h11.6L20 13v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M4 13h5l1 2h4l1-2h5"/></svg>'};
 const slipEl=document.createElement('div');slipEl.id='slip';const capEl=document.createElement('div');capEl.id='slipcap';document.body.append(slipEl,capEl);
 function slipList(){const out=[];for(const n of S.notes.values()){if(!isSlip(n))continue;const{fm,body}=splitFm(n.c),cm=fm.match(/^created:\s*(.+)$/m);out.push({id:n.id,n,body:body.trim(),t:(cm&&Date.parse(cm[1]))||n.ct||n.mt,star:/^star:\s*true\s*$/m.test(fm),imgs:[...body.matchAll(/!\[\[([^\]|]+)/g)].map(x=>x[1].trim())})}return out.sort((a,b)=>b.t-a.t)}
 function slipThreads(all){const byT=new Map();for(const e of all)byT.set(titleOf(e.n).toLowerCase(),e);const par=new Map(),kids=new Map();
  for(const e of all){for(const m of e.body.matchAll(/\[\[([^\]|#]+)/g)){const q=byT.get(m[1].trim().toLowerCase());if(q&&q!==e&&q.t<e.t){par.set(e.id,q);if(!kids.has(q.id))kids.set(q.id,[]);kids.get(q.id).push(e);break}}}
  for(const a of kids.values())a.sort((x,y)=>x.t-y.t);return{par,kids}}
 function slipDay(t){const d=new Date(t),n=new Date(),k=x=>x.getFullYear()*1e4+x.getMonth()*100+x.getDate();if(k(d)===k(n))return 'Today';const y=new Date(n);y.setDate(n.getDate()-1);if(k(d)===k(y))return 'Yesterday';return d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}
-function slipOpen(){SLIP.open=true;SLIP.view='list';slipEl.innerHTML=`<div class="sl-h"><button class="sl-ib" data-s="close" aria-label="Close">✕</button><b>Slipbox</b><span class="sl-n" id="sln"></span><button class="sl-new" data-s="cap">+ New</button></div><div class="sl-s" id="sls"><input id="slq" type="search" placeholder="Search ideas" autocomplete="off"></div><div class="sl-f" id="slf"></div><div class="sl-l" id="sllist"></div><div class="sl-pk" id="slpick" hidden></div>`;$('#slq').value=SLIP.q;slipEl.classList.add('on');slipRenderList()}
+function slipOpen(){SLIP.open=true;SLIP.fresh=true;SLIP.view='list';slipEl.innerHTML=`<div class="sl-h"><button class="sl-ib" data-s="close" aria-label="Close">✕</button><b>Slipbox</b><span class="sl-n" id="sln"></span><button class="sl-new" data-s="cap">+ New</button></div><div class="sl-s" id="sls"><input id="slq" type="search" placeholder="Search ideas" autocomplete="off"></div><div class="sl-f" id="slf"></div><div class="sl-l" id="sllist"></div><div class="sl-pk" id="slpick" hidden></div>`;$('#slq').value=SLIP.q;slipEl.classList.add('on');slipRenderList();const _sl=$('#sllist');if(_sl){_sl.classList.add('fresh');setTimeout(()=>_sl.classList.remove('fresh'),900)}}
 function slipClose(){SLIP.open=false;slipEl.classList.remove('on');SLIP.exp=null;SLIP.think=null;SLIP.arm=null}
+function slipBodyHtml(body){const L=body.split('\n'),re=/^\*(\d\d-\d\d \d\d:\d\d)\* (.*)$/;let i=L.length;while(i>0&&(re.test(L[i-1])||!L[i-1].trim()))i--;const th=L.slice(i).filter(l=>re.test(l)).map(l=>{const m=l.match(re);return `<div class="sl-tho"><i>${esc(m[1])}</i>${esc(m[2])}</div>`}).join('');return render(L.slice(0,i).join('\n'))+th}
 function slipCard(e,kids,depth){const open=SLIP.exp===e.id,pre=slipPlain(e.body),th=e.imgs.length&&mediaByName(e.imgs[0]),tm=new Date(e.t).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}),ks=kids.get(e.id)||[];
- let h=`<div class="sl-c${open?' ex':''}${depth?' kid':''}"><div class="sl-top" data-s="tog" data-id="${e.id}"><div class="sl-m"><span class="sl-t">${tm}</span>${e.star?'<i class="sl-star">★</i>':''}${ks.length?`<span class="sl-k">↳ ${ks.length}</span>`:''}</div>${open?'':`<div class="sl-x">${esc((pre||'Image').slice(0,240))}</div>`}${th&&th.th&&!open?`<img class="sl-th" src="${th.th}" alt="">`:''}</div>`;
- if(open){h+=`<div class="sl-body">${render(e.body)}</div>`;
+ let h=`<div class="sl-c${open?' ex':''}${depth?' kid':''}"><div class="sl-top" data-s="tog" data-id="${e.id}"><div class="sl-m"><span class="sl-t">${tm}</span>${e.star?'<i class="sl-star">★</i>':''}${ks.length?`<span class="sl-k">↳ ${ks.length}</span>`:''}</div>${open?'':`<div class="sl-x">${esc((pre||(/\.(webm|m4a|ogg|mp3|wav)\]\]/i.test(e.body)?'🎙 Voice note':'Image')).slice(0,240))}</div>`}${th&&th.th&&!open?`<img class="sl-th" src="${th.th}" alt="">`:''}</div>`;
+ if(open){h+=`<div class="sl-body">${slipBodyHtml(e.body)}</div>`;
   if(SLIP.think===e.id)h+=`<div class="sl-thk"><textarea id="slth" rows="2" placeholder="Build on this…"></textarea><button class="chip sel" data-s="thsave" data-id="${e.id}">Add</button></div>`;
-  h+=`<div class="sl-act">${[['open','Open'],['think','Add thought'],['build','Build on'],['append','Append to…'],['make','Make note'],['move','Move'],['star',e.star?'★ Unstar':'☆ Star'],['del',SLIP.arm===e.id?'Tap again to delete':'Delete']].map(([k,l])=>`<button class="chip${k==='del'&&SLIP.arm===e.id?' sel':''}" data-s="${k}" data-id="${e.id}">${l}</button>`).join('')}</div>`;
+  h+=`<div class="sl-act">${[['open','Open'],['think','Add thought'],['build','Build on'],['append','Append to…'],['make','Make note'],...(addonOn('tasks')?[['task','Make task']]:[]),['move','Move'],['star',e.star?'★ Unstar':'☆ Star'],['del',SLIP.arm===e.id?'Tap again to delete':'Delete']].map(([k,l])=>`<button class="chip${k==='del'&&SLIP.arm===e.id?' sel':''}" data-s="${k}" data-id="${e.id}">${l}</button>`).join('')}</div>`;
   for(const k of ks)h+=slipCard(k,kids,depth+1)}
  return h+'</div>'}
 function slipRenderList(){if(!SLIP.open)return;const lst=$('#sllist');if(!lst)return;
@@ -2823,23 +2875,24 @@ function slipDoAppend(e,tid,pos){const t=S.notes.get(tid);if(!t)return;const bef
  let out=fm+lines.join('\n');if(!out.endsWith('\n'))out+='\n';t.c=out;touch(t);if(cur()&&cur().id===t.id)softReload(t);
  deleteNote(e.n);SLIP.exp=null;SLIP.view='list';SLIP.tgt=null;slipRenderList();
  toast('Added to “'+titleOf(t)+'”','Undo',()=>{t.c=before;touch(t);if(cur()&&cur().id===t.id)softReload(t);createNote(snap.dir,snap.title,snap.c);slipRenderList()})}
-function slipCaptureOpen(o){SLIP.parent=(o&&o.parent)||null;SLIP.imgs=[];SLIP.cap=true;
- capEl.innerHTML=`<div class="sc-b" data-c="x"></div><div class="sc-p"><div class="sc-h"><b>${SLIP.parent?'Build on an idea':'Quick thought'}</b><button class="sl-ib" data-c="x" aria-label="Close">✕</button></div>${SLIP.parent?`<div class="sc-par">${esc(slipPlain(SLIP.parent.body).slice(0,90)||'Image')}</div>`:''}<textarea id="sctx" rows="5" placeholder="Dump it here…"></textarea><div class="sc-im" id="scim"></div><div class="sc-a"><button class="chip" data-c="img">＋ Image</button><span class="sp"></span><button class="chip" data-c="save2">Save + next</button><button class="chip sel" data-c="save">Save</button></div></div>`;
- capEl.classList.add('on');setTimeout(()=>{const t=$('#sctx');t&&t.focus()},60)}
+function slipCaptureOpen(o){SLIP.parent=(o&&o.parent)||null;SLIP.imgs=[];SLIP.voice=[];SLIP.cap=true;
+ capEl.innerHTML=`<div class="sc-b" data-c="x"></div><div class="sc-p"><div class="sc-h"><b>${SLIP.parent?'Build on an idea':'Quick thought'}</b><button class="sl-ib" data-c="x" aria-label="Close">✕</button></div>${SLIP.parent?`<div class="sc-par">${esc(slipPlain(SLIP.parent.body).slice(0,90)||'Image')}</div>`:''}<textarea id="sctx" rows="5" placeholder="Dump it here…"></textarea><div class="sc-im" id="scim"></div><div class="sc-im" id="scvc"></div><div class="sc-a"><button class="chip" data-c="img">＋ Image</button>${addonOn('voice')?'<button class="chip" data-c="mic">🎙 Voice</button>':''}<span class="sp"></span><button class="chip" data-c="save2">Save + next</button><button class="chip sel" data-c="save">Save</button></div></div>`;
+ capEl.classList.add('on');setTimeout(()=>{const t=$('#sctx');t&&t.focus()},60);if(o&&o.voice&&addonOn('voice'))setTimeout(slipMic,350)}
 const slipCapture=slipCaptureOpen;
-function slipCapClose(){SLIP.cap=false;capEl.classList.remove('on');const t=$('#sctx');t&&t.blur()}
-function slipSave(keep){const ta=$('#sctx'),txt=(ta.value||'').trim();if(!txt&&!SLIP.imgs.length){ta.focus();return}
+function slipCapClose(){if(VR.rec){clearInterval(SLIP.recT);vrStop()}SLIP.cap=false;capEl.classList.remove('on');const t=$('#sctx');t&&t.blur()}
+async function slipSave(keep){if(VR.rec){clearInterval(SLIP.recT);const r=await vrStop();if(r)SLIP.voice.push(r)}const ta=$('#sctx'),txt=(ta.value||'').trim();if(!txt&&!SLIP.imgs.length&&!SLIP.voice.length){ta.focus();return}
  const now=new Date(),pad=n=>String(n).padStart(2,'0'),stamp=pad(now.getMonth()+1)+'-'+pad(now.getDate())+' '+pad(now.getHours())+'.'+pad(now.getMinutes()),
   words=(slipPlain(txt).split(' ').filter(Boolean).slice(0,5).join(' ')||'Image').slice(0,40),iso=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate())+'T'+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds()),
   par=SLIP.parent?'[['+titleOf(SLIP.parent.n)+']]\n\n':'',
-  content='---\nslip: true\ncreated: '+iso+'\n---\n'+par+txt+(SLIP.imgs.length?'\n\n'+SLIP.imgs.map(m=>'![['+m.name+']]').join('\n'):'')+'\n';
+  content='---\nslip: true\ncreated: '+iso+'\n---\n'+par+txt+(SLIP.imgs.length?'\n\n'+SLIP.imgs.map(m=>'![['+m.name+']]').join('\n'):'')+(SLIP.voice.length?'\n\n'+SLIP.voice.map(m=>'![['+m.name+']]').join('\n'):'')+'\n';
  S.folders.add(slipDir());createNote(slipDir(),words+' - '+stamp,content);
- if(keep){ta.value='';SLIP.imgs=[];SLIP.parent=null;slipCapImgs();const pr=capEl.querySelector('.sc-par');pr&&pr.remove();toast('Saved - next one');ta.focus()}else{slipCapClose();toast('Saved to Slipbox')}
+ if(keep){ta.value='';SLIP.imgs=[];SLIP.voice=[];SLIP.parent=null;slipCapImgs();slipVoiceChips();const mb=capEl.querySelector('[data-c=mic]');if(mb){mb.classList.remove('rec');mb.textContent='🎙 Voice'}const pr=capEl.querySelector('.sc-par');pr&&pr.remove();toast('Saved - next one');ta.focus()}else{slipCapClose();toast('Saved to Slipbox')}
  if(SLIP.open&&SLIP.view==='list')slipRenderList()}
 function slipCapImgs(){const b=$('#scim');if(b)b.innerHTML=SLIP.imgs.map((m,i)=>`<div><img src="${m.th||''}" alt=""><b data-c="rm" data-i="${i}">×</b></div>`).join('')}
 capEl.addEventListener('click',ev=>{const b=ev.target.closest('[data-c]');if(!b)return;const k=b.dataset.c;
  if(k==='x')slipCapClose();else if(k==='save')slipSave(false);else if(k==='save2')slipSave(true);
  else if(k==='img')pickFiles(async f=>{const ms=await importImages(f,{insert:false});SLIP.imgs.push(...ms);slipCapImgs()},true);
+ else if(k==='mic')slipMic();else if(k==='vrm'){SLIP.voice.splice(+b.dataset.i,1);slipVoiceChips()}
  else if(k==='rm'){SLIP.imgs.splice(+b.dataset.i,1);slipCapImgs()}});
 slipEl.addEventListener('input',e=>{if(e.target.id==='slq'){SLIP.q=e.target.value;slipRenderList()}else if(e.target.id==='slpq'){SLIP.pickQ=e.target.value;slipRenderPick(false)}else if(e.target.id==='mkq'){SLIP.mk.q=e.target.value;slipRenderPick(false)}else if(e.target.id==='mkt')SLIP.mk.title=e.target.value});
 slipEl.addEventListener('click',ev=>{try{slipClick(ev)}catch(err){console.warn('slipbox',err);toast('Slipbox: '+((err&&err.message)||err))}});
@@ -2857,6 +2910,7 @@ function slipClick(ev){const b=ev.target.closest('[data-s]');if(!b)return;const 
   case 'append':if(e){SLIP.tgt={id};SLIP.view='pickNote';SLIP.pickQ='';slipRenderList()}break;
   case 'make':if(e){SLIP.tgt={id};SLIP.mk={title:(slipPlain(e.body).split(/[.!?\n]/)[0]||'Idea').slice(0,60).trim(),dir:'',q:'',move:false};SLIP.view='mk';slipRenderList()}break;
   case 'move':if(e){SLIP.tgt={id};SLIP.mk={title:'',dir:'',q:'',move:true};SLIP.view='mk';slipRenderList()}break;
+  case 'task':if(e){tkNew({title:(slipPlain(e.body).split(/[.!?\n]/)[0]||'Idea').slice(0,90).trim(),src:{id:e.id,path:e.n.path,text:null,h:'Slipbox'}});toast('Task added','Open',()=>tkOpen())}break;
   case 'del':if(e){if(SLIP.arm!==id){SLIP.arm=id;slipRenderList();break}const snap={dir:dirOf(e.n.path),title:titleOf(e.n),c:e.n.c};deleteNote(e.n);SLIP.arm=null;SLIP.exp=null;slipRenderList();toast('Idea deleted','Undo',()=>{createNote(snap.dir,snap.title,snap.c);slipRenderList()})}break;
   case 'pback':if(SLIP.view==='pickPos'){SLIP.view='pickNote';slipRenderList()}else{SLIP.view='list';slipRenderList()}break;
   case 'pn':SLIP.tgt.t=b.dataset.t;SLIP.view='pickPos';slipRenderList();break;
@@ -2871,7 +2925,210 @@ function slipClick(ev){const b=ev.target.closest('[data-s]');if(!b)return;const 
 A_('slipbox','Slipbox','files',()=>slipOpen(),{short:'Slipbox'});
 A_('slipadd','Quick capture (Slipbox)','plus',()=>slipCaptureOpen(),{short:'Slip'});
 
-const APP_V='4.5.1';
+/* ================= TASKS =================
+   Tasks are their own entities (not every checkbox is a task). They live in .notron/tasks.json inside the vault.
+   A task can be linked to a checkbox line in a note: ticking one ticks the other. */
+const ADDONS=[{id:'tasks',name:'Tasks',desc:'Task page, due dates, reminders and the count bubble'},{id:'slip',name:'Slipbox',desc:'Quick capture and the idea inbox'},{id:'voice',name:'Voice notes',desc:'Record voice slips and play them inside notes'},{id:'random',name:'Random note',desc:'Open a random note from the + menu or map it to a button'}];
+const addonOn=id=>{const o=S.set.addons;return !o||o[id]!==false};
+const TK={list:[],loaded:false,t:0,open:false,view:'today',group:'note',sel:null,sheet:false,fm:0,colls:new Set(),bySrc:new Map(),busy:false,rn:false,perm:false};
+const TKN={todo:'To do',doing:'In progress',wait:'Waiting',done:'Done',drop:'Dropped'},TKC={1:'#ff5a5a',2:'#ffa94d',3:'#5aa2ff',4:'#8b93a7'};
+const WDN=['sun','mon','tue','wed','thu','fri','sat'],WDL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],MON=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const tkPad=n=>String(n).padStart(2,'0'),tkYmd=d=>d.getFullYear()+'-'+tkPad(d.getMonth()+1)+'-'+tkPad(d.getDate()),tkYmdP=s=>{const a=s.split('-').map(Number);return new Date(a[0],a[1]-1,a[2])},tkAdd=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x},tkToday=()=>tkYmd(new Date());
+function tkS(){const d={title:'Tasks',openTo:'graph',bubble:true,notif:{on:true,digest:true,digestAt:'08:00',soon:true,soonMin:30,soonEve:'20:00',missed:true,missedLate:60,missedAt:'09:00',nudge:true}},u=S.set.tasks||{};return Object.assign({},d,u,{notif:Object.assign({},d.notif,u.notif||{})})}
+function tkSet(path,val){const u=Object.assign({},S.set.tasks||{});if(path.startsWith('notif.')){u.notif=Object.assign({},u.notif||{});u.notif[path.slice(6)]=val}else u[path]=val;S.set.tasks=u;saveMeta();if(path.startsWith('notif.'))tkNotifSoon();tkBadge();const t=document.getElementById('tktl');if(t)t.textContent=tkS().title}
+const tkId=()=>Math.random().toString(36).slice(2,10),tkAct=t=>!t.del&&(t.state==='todo'||t.state==='doing'||t.state==='wait'),tkGet=id=>TK.list.find(t=>t.id===id&&!t.del);
+const tkPlain=s=>String(s||'').replace(/\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g,(m,a,b)=>b||a).replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/[*_`~=]/g,'').replace(/\s+/g,' ').trim();
+/* ---- storage ---- */
+function tkPersist(){clearTimeout(TK.t);TK.t=setTimeout(tkWrite,400)}
+async function tkWrite(){const data=JSON.stringify({v:1,tasks:TK.list});try{if(VAULT.on)await vq(()=>vWrite('.notron/tasks.json',data));else await DB.kvSet('tasks',TK.list)}catch(e){console.warn('tasks save',e)}try{if(VAULT.on){const h=await vFile('.notron/tasks.json',false);TK.fm=(await h.getFile()).lastModified}}catch(e){}}
+function tkIndex(){TK.bySrc=new Map();for(const t of TK.list)if(!t.del&&t.src&&t.src.id&&t.src.text){if(!TK.bySrc.has(t.src.id))TK.bySrc.set(t.src.id,[]);TK.bySrc.get(t.src.id).push(t)}}
+async function tkLoad(){let arr=null;try{if(VAULT.on){const t=await vReadText('.notron/tasks.json');if(t)arr=JSON.parse(t).tasks}else arr=await DB.kvGet('tasks')}catch(e){}
+ TK.list=Array.isArray(arr)?arr:[];TK.loaded=true;tkIndex();tkBadge();tkNotifSoon();tkListen();try{if(VAULT.on){const h=await vFile('.notron/tasks.json',false);TK.fm=(await h.getFile()).lastModified}}catch(e){}
+ const o=tkS().openTo;if(!TK.opened){TK.opened=true;if(o==='tasks'&&addonOn('tasks'))tkOpen();else if(o==='slip'&&addonOn('slip'))slipOpen()}}
+function tkInit(n){n=n||0;if(TK.loaded)return;if(VAULT.on||(S.notes&&S.notes.size))tkLoad();else if(n<80)setTimeout(()=>tkInit(n+1),500)}
+async function tkPoll(){if(!VAULT.on||!TK.loaded)return;try{const h=await vFile('.notron/tasks.json',false),f=await h.getFile();if(f.lastModified===TK.fm)return;TK.fm=f.lastModified;const rem=JSON.parse(await f.text()).tasks||[],by=new Map(TK.list.map(t=>[t.id,t]));let ch=false;for(const r of rem){const l=by.get(r.id);if(!l||(r.u||0)>(l.u||0)){by.set(r.id,r);ch=true}}if(ch){TK.list=[...by.values()];tkIndex();tkBadge();tkNotifSoon();if(TK.open)tkRender()}}catch(e){}}
+/* ---- natural-language quick add: "call supplier tomorrow 5pm p1 #watch every week" ---- */
+function tkNextWd(idx){const d=new Date();let n=(idx-d.getDay()+7)%7;if(n===0)n=7;return tkYmd(tkAdd(d,n))}
+function tkSpan(span,ds){const d=tkYmdP(ds||tkToday());if(span==='week'){const w=(d.getDay()+6)%7;return{from:tkYmd(tkAdd(d,-w)),to:tkYmd(tkAdd(d,6-w))}}return{from:tkYmd(new Date(d.getFullYear(),d.getMonth(),1)),to:tkYmd(new Date(d.getFullYear(),d.getMonth()+1,0))}}
+function tkParse(raw){let s=' '+raw+' ';const o={pri:4,due:null,time:null,span:null,rep:null,tags:[],link:null},now=new Date();const eat=(re,fn)=>{const m=s.match(re);if(m){s=s.replace(re,' ');fn(m)}};
+ eat(/\s\[\[([^\]]+)\]\](?=\s)/,m=>{o.link=m[1]});
+ eat(/\s(?:p|!)([1-4])(?=\s)/i,m=>{o.pri=+m[1]});eat(/\s!!!(?=\s)/,()=>{o.pri=1});eat(/\s!!(?=\s)/,()=>{o.pri=2});
+ s=s.replace(/\s#([\w\-\/]+)/g,(m,t)=>{o.tags.push(t);return ' '});
+ eat(/\severy\s+(day|weekday|week|month|mon|tue|wed|thu|fri|sat|sun)[a-z]*(?=\s)/i,m=>{const k=m[1].toLowerCase();o.rep=k==='day'?'daily':k==='weekday'?'weekdays':k==='month'?'monthly':'weekly';const wi=WDN.indexOf(k.slice(0,3));if(wi>=0&&k!=='week'&&k!=='weekday'&&k!=='month'&&k!=='day'&&!/^(day|week|month)/.test(k))o.due=tkNextWd(wi)});
+ eat(/\s(daily|weekly|monthly)(?=\s)/i,m=>{o.rep={daily:'daily',weekly:'weekly',monthly:'monthly'}[m[1].toLowerCase()]});
+ eat(/\s(?:at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)(?=\s)/i,m=>{let h=+m[1]%12;if(/pm/i.test(m[3]))h+=12;o.time=tkPad(h)+':'+(m[2]||'00')});
+ eat(/\s(?:at\s+)?([01]?\d|2[0-3]):([0-5]\d)(?=\s)/,m=>{o.time=tkPad(+m[1])+':'+m[2]});
+ eat(/\s(tonight)(?=\s)/i,()=>{o.due=tkToday();if(!o.time)o.time='20:00'});
+ eat(/\s(today)(?=\s)/i,()=>{o.due=tkToday()});
+ eat(/\s(tomorrow|tmrw|tmr)(?=\s)/i,()=>{o.due=tkYmd(tkAdd(now,1))});
+ eat(/\snext\s+week(?=\s)/i,()=>{o.span='week';o.due=tkSpan('week',tkYmd(tkAdd(now,7))).to});
+ eat(/\sthis\s+week(?=\s)/i,()=>{o.span='week';o.due=tkSpan('week').to});
+ eat(/\snext\s+month(?=\s)/i,()=>{o.span='month';o.due=tkSpan('month',tkYmd(new Date(now.getFullYear(),now.getMonth()+1,1))).to});
+ eat(/\sthis\s+month(?=\s)/i,()=>{o.span='month';o.due=tkSpan('month').to});
+ eat(/\sin\s+(\d+)\s*(day|week|month|hour|hr|h)s?(?=\s)/i,m=>{const n=+m[1],u=m[2].toLowerCase();if(u==='day')o.due=tkYmd(tkAdd(now,n));else if(u==='week')o.due=tkYmd(tkAdd(now,7*n));else if(u==='month')o.due=tkYmd(new Date(now.getFullYear(),now.getMonth()+n,now.getDate()));else{const d=new Date(now.getTime()+n*3600000);o.due=tkYmd(d);o.time=tkPad(d.getHours())+':'+tkPad(d.getMinutes())}});
+ eat(/\s(?:next\s+|on\s+)?(sun|mon|tue|wed|thu|fri|sat)[a-z]*(?=\s)/i,m=>{if(!o.due)o.due=tkNextWd(WDN.indexOf(m[1].toLowerCase()))});
+ eat(/\s(\d{4}-\d{2}-\d{2})(?=\s)/,m=>{o.due=m[1]});
+ eat(/\s(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})(?=\s)/i,m=>{const d=new Date(now.getFullYear(),MON.indexOf(m[1].toLowerCase()),+m[2]);if(d<tkYmdP(tkToday()))d.setFullYear(d.getFullYear()+1);o.due=tkYmd(d)});
+ eat(/\s(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*(?=\s)/i,m=>{const d=new Date(now.getFullYear(),MON.indexOf(m[2].toLowerCase()),+m[1]);if(d<tkYmdP(tkToday()))d.setFullYear(d.getFullYear()+1);o.due=tkYmd(d)});
+ eat(/\s(\d{1,2})\/(\d{1,2})(?=\s)/,m=>{const d=new Date(now.getFullYear(),+m[1]-1,+m[2]);if(d<tkYmdP(tkToday()))d.setFullYear(d.getFullYear()+1);o.due=tkYmd(d)});
+ if(o.time&&!o.due){const t=new Date();const [h,mi]=o.time.split(':').map(Number);t.setHours(h,mi,0,0);o.due=tkYmd(t<now?tkAdd(now,1):now)}
+ o.title=s.replace(/\s+/g,' ').trim()||raw.trim();return o}
+/* ---- dates ---- */
+function tkDay(ds){if(!ds)return '';const t=tkToday(),d=tkYmdP(ds),diff=Math.round((d-tkYmdP(t))/864e5);if(diff===0)return 'Today';if(diff===1)return 'Tomorrow';if(diff===-1)return 'Yesterday';if(diff>1&&diff<7)return WDL[d.getDay()];return d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}
+function tkDue(t){if(!t.due)return '';if(t.span)return (t.span==='week'?'This week':'This month')+' · '+tkDay(t.due);return tkDay(t.due)+(t.time?' '+t.time:'')}
+const tkOver=t=>tkAct(t)&&t.due&&(t.due<tkToday()||(t.due===tkToday()&&t.time&&t.time<tkPad(new Date().getHours())+':'+tkPad(new Date().getMinutes())));
+function tkNext(t){let d=tkYmdP(t.due||tkToday());const now=tkYmdP(tkToday()),step=()=>{if(t.rep==='daily')d=tkAdd(d,1);else if(t.rep==='weekdays'){do{d=tkAdd(d,1)}while(d.getDay()===0||d.getDay()===6)}else if(t.rep==='weekly')d=tkAdd(d,7);else if(t.rep==='monthly')d=new Date(d.getFullYear(),d.getMonth()+1,d.getDate());else d=tkAdd(d,1)};step();let g=0;while(d<=now&&g++<400)step();return tkYmd(d)}
+/* ---- operations ---- */
+function tkNew(o){const now=Date.now(),t={id:tkId(),title:(o.title||'Task').trim(),notes:o.notes||'',state:'todo',pri:o.pri||4,due:o.due||null,time:o.time||null,span:o.span||null,from:o.span&&o.due?tkSpan(o.span,o.due).from:null,rep:o.rep||null,tags:o.tags||[],parent:o.parent||null,src:o.src||null,created:now,u:now,done:null,hist:[]};TK.list.push(t);tkPersist();tkIndex();tkBadge();tkNotifSoon();if(t.due)tkEnsurePerm();if(TK.open)tkRender();return t}
+function tkUpd(id,p){const t=tkGet(id);if(!t)return;Object.assign(t,p);t.u=Date.now();tkPersist();tkIndex();tkBadge();tkNotifSoon();if(TK.open)tkRender();return t}
+function tkDel(id){const t=TK.list.find(x=>x.id===id);if(!t)return;t.del=true;t.u=Date.now();for(const c of TK.list)if(c.parent===id&&!c.del){c.del=true;c.u=Date.now()}tkPersist();tkIndex();tkBadge();tkNotifSoon();if(TK.open)tkRender()}
+function tkDone(id,on,o){o=o||{};const t=tkGet(id);if(!t)return;const now=Date.now();
+ if(on&&t.rep){(t.hist=t.hist||[]).push(now);t.hist=t.hist.slice(-30);t.due=tkNext(t);if(t.span)t.from=tkSpan(t.span,t.due).from;t.state='todo';t.done=null;toast('Done · next '+tkDay(t.due))}
+ else{t.state=on?'done':'todo';t.done=on?now:null;if(on)for(const c of TK.list)if(c.parent===id&&tkAct(c)){c.state='done';c.done=now;c.u=now}}
+ t.u=now;if(!o.fromNote&&t.src&&t.src.text&&!t.rep)tkSyncNote(t,!!on);tkPersist();tkIndex();tkBadge();tkNotifSoon();if(TK.open)tkRender()}
+function tkSyncNote(t,on){const n=S.notes.get(t.src.id);if(!n)return;const L=n.c.split('\n');const i=L.findIndex(l=>{const m=l.match(/^\s*[-*+]\s+\[( |x|X)\]\s+(.*)$/);return m&&tkPlain(m[2])===t.src.text});if(i<0)return;const nl=L[i].replace(/\[( |x|X)\]/,on?'[x]':'[ ]');if(nl===L[i])return;L[i]=nl;n.c=L.join('\n');TK.busy=true;try{touch(n)}finally{TK.busy=false}if(cur()&&cur().id===n.id)softReload(n)}
+function tkNoteChanged(n){if(TK.busy)return;const ts=TK.bySrc.get(n.id);if(!ts)return;const L=n.c.split('\n');for(const t of ts.slice()){const i=L.findIndex(l=>{const m=l.match(/^\s*[-*+]\s+\[( |x|X)\]\s+(.*)$/);return m&&tkPlain(m[2])===t.src.text});if(i<0)continue;const chk=/\[(x|X)\]/.test(L[i]);if(chk&&t.state!=='done'&&!t.rep)tkDone(t.id,true,{fromNote:true});else if(!chk&&t.state==='done')tkDone(t.id,false,{fromNote:true})}}
+function tkFromLine(n,text,heading){const o=tkParse(text);const t=tkNew({title:o.title,pri:o.pri,due:o.due,time:o.time,span:o.span,rep:o.rep,tags:o.tags,src:{id:n.id,path:n.path,text:tkPlain(text),h:heading||''}});return t}
+function tkMakeFromEl(li){const n=cur();if(!n)return;const cl=li.cloneNode(true);cl.querySelectorAll('ul,ol').forEach(x=>x.remove());const txt=cl.textContent.replace(/\u200b/g,'').trim();if(!txt)return;
+ let h='',el=li.closest('ul,ol')||li;while(el&&el!==wys){let p=el.previousElementSibling;while(p){if(/^H[1-6]$/.test(p.tagName)){h=p.textContent.trim();break}p=p.previousElementSibling}if(h)break;el=el.parentElement}
+ const dup=(TK.bySrc.get(n.id)||[]).find(t=>t.src.text===tkPlain(txt));if(dup){toast('Already a task','Open',()=>{tkOpen();tkSheet(dup.id)});return}
+ const t=tkFromLine(n,txt,h);navigator.vibrate&&navigator.vibrate(12);toast('Task added: '+t.title.slice(0,36),'Open',()=>tkOpen())}
+function tkBadge(){const n=TK.list.filter(tkAct).length,show=addonOn('tasks')&&tkS().bubble&&n>0;document.querySelectorAll('.tkbd').forEach(b=>{const old=b.textContent;b.textContent=n>99?'99+':String(n);b.hidden=!show;if(old!==b.textContent){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}})}
+
+/* ---- Tasks page ---- */
+const tkEl=document.createElement('div');tkEl.id='tasks';const tkdEl=document.createElement('div');tkdEl.id='tkd';document.body.append(tkEl,tkdEl);
+const TKV=[['today','Today'],['upcoming','Upcoming'],['active','Active'],['done','Done'],['all','All']],TKG=[['note','Note'],['folder','Folder'],['tag','Tag'],['date','Date'],['pri','Priority'],['state','State']];
+function tkCounts(){const act=TK.list.filter(tkAct),t0=tkToday(),d0=new Date();d0.setHours(0,0,0,0);return{act:act.length,over:act.filter(tkOver).length,today:act.filter(t=>t.due&&t.due<=t0||(t.span&&t.from&&t.from<=t0&&t.due>=t0)).length,done:TK.list.filter(t=>!t.del&&t.state==='done'&&t.done>=d0.getTime()).length}}
+function tkFilter(){const t0=tkToday(),all=TK.list.filter(t=>!t.del&&!t.parent);const inToday=t=>t.due&&t.due<=t0||(t.span&&t.from&&t.from<=t0&&t.due>=t0);
+ switch(TK.view){case 'today':return all.filter(t=>tkAct(t)&&inToday(t));case 'upcoming':return all.filter(t=>tkAct(t)&&t.due&&!inToday(t));case 'active':return all.filter(tkAct);case 'done':return all.filter(t=>t.state==='done'||t.state==='drop').sort((a,b)=>(b.done||b.u)-(a.done||a.u));default:return all}}
+function tkSrcName(t){if(!t.src)return '';const n=t.src.id&&S.notes.get(t.src.id);return n?titleOf(n):(t.src.path||'').split('/').pop().replace(/\.md$/,'')}
+function tkKeys(t){const g=TK.group;if(g==='note')return[t.src?tkSrcName(t)||'Inbox':'Inbox'];if(g==='folder'){const p=t.src&&t.src.path;return[p&&p.includes('/')?dirOf(p):'No folder']}if(g==='tag')return t.tags&&t.tags.length?t.tags.map(x=>'#'+x):['No tag'];
+ if(g==='pri')return['P'+t.pri];if(g==='state')return[TKN[t.state]];const d=t.due,t0=tkToday();if(!d)return['Someday'];if(t.span)return[t.span==='week'?'This week':'This month'];if(d<t0)return['Overdue'];return[tkDay(d)]}
+function tkSort(a,b){const o={todo:1,doing:0,wait:2,done:3,drop:4};return (o[a.state]-o[b.state])||(a.pri-b.pri)||String(a.due||'9').localeCompare(String(b.due||'9'))||(a.created-b.created)}
+function tkRow(t,depth){const subs=TK.list.filter(x=>x.parent===t.id&&!x.del),dn=t.state==='done'||t.state==='drop',od=tkOver(t),sd=subs.filter(x=>x.state==='done').length;
+ const meta=[t.due?`<span class="tk-c${od?' od':''}">${esc(tkDue(t))}</span>`:'',t.rep?'<span class="tk-c">↻</span>':'',t.state!=='todo'&&t.state!=='done'?`<span class="tk-c st-${t.state}">${TKN[t.state]}</span>`:'',subs.length?`<span class="tk-c">${sd}/${subs.length}</span>`:'',(t.tags||[]).slice(0,2).map(x=>`<span class="tk-c">#${esc(x)}</span>`).join(''),TK.group!=='note'&&t.src&&tkSrcName(t)?`<span class="tk-c">${esc(tkSrcName(t))}</span>`:'',dn&&t.done?`<span class="tk-c">${esc(fmtD(t.done))}</span>`:''].join('');
+ return `<div class="tk-r${dn?' dn':''}${depth?' sub':''}" data-id="${t.id}"><div class="tk-sw" data-id="${t.id}"><button class="tk-cb p${t.pri}${t.state==='done'?' on':''}" data-k="tick" data-id="${t.id}" aria-label="Complete">${t.state==='done'?'✓':t.state==='drop'?'–':''}</button><div class="tk-m" data-k="open" data-id="${t.id}"><div class="tk-t">${esc(t.title)}</div>${meta?`<div class="tk-s">${meta}</div>`:''}</div></div></div>`}
+function tkRender(){if(!TK.open)return;const c=tkCounts();$('#tktl')&&($('#tktl').textContent=tkS().title);
+ $('#tksum').innerHTML=`<b>${c.act}</b> active${c.over?` · <i class="od">${c.over} overdue</i>`:''}${c.done?` · ${c.done} done today`:''}`;
+ $('#tkf').innerHTML=TKV.map(([k,l])=>`<button class="chip${TK.view===k?' sel':''}" data-k="view" data-v="${k}">${l}</button>`).join('');
+ $('#tkg').innerHTML='<span class="tk-gl">Group</span>'+TKG.map(([k,l])=>`<button class="chip${TK.group===k?' sel':''}" data-k="grp" data-v="${k}">${l}</button>`).join('');
+ const list=tkFilter(),map=new Map();for(const t of list)for(const k of tkKeys(t)){if(!map.has(k))map.set(k,[]);map.get(k).push(t)}
+ const gs=[...map.entries()].map(([k,a])=>[k,a.sort(tkSort)]);const rank=k=>k==='Overdue'?-2:k==='Inbox'||k==='No tag'||k==='No folder'||k==='Someday'?9:0;gs.sort((a,b)=>rank(a[0])-rank(b[0])||(TK.group==='pri'||TK.group==='state'?a[0].localeCompare(b[0]):String(a[1][0].due||'9').localeCompare(String(b[1][0].due||'9')))||a[0].localeCompare(b[0]));
+ let h='';for(const[k,a]of gs){const col=TK.colls.has(k);h+=`<div class="tk-h${col?' c':''}" data-k="coll" data-g="${esc(k)}"><b>${esc(k)}</b><span>${a.length}</span><i>▾</i></div>`;if(!col)for(const t of a){h+=tkRow(t,0);for(const s of TK.list.filter(x=>x.parent===t.id&&!x.del&&(TK.view==='done'||tkAct(x)||TK.view==='all')))h+=tkRow(s,1)}}
+ $('#tklist').innerHTML=h||`<div class="sl-empty">${TK.view==='done'?'Nothing completed yet.':TK.view==='today'?'Nothing due today.<br>Add a task below, or switch to Upcoming.':'No tasks here.<br>Type below: <b>call supplier tomorrow 5pm p1</b>'}</div>`}
+function tkOpen(){if(!addonOn('tasks'))return;TK.open=true;tkEl.innerHTML=`<div class="tk-top"><button class="sl-ib" data-k="close" aria-label="Close">✕</button><div class="tk-ttl"><b id="tktl"></b><button class="tk-ed" data-k="rename" aria-label="Rename page">✎</button></div></div><div class="tk-sum" id="tksum"></div><div class="tk-f" id="tkf"></div><div class="tk-f" id="tkg"></div><div class="tk-l" id="tklist"></div><div class="tk-pv" id="tkpv"></div><div class="tk-add"><input id="tkq" placeholder="Add a task…  tomorrow 5pm p1 #work" autocomplete="off" enterkeyhint="done"><button class="chip sel" data-k="add">Add</button></div>`;tkEl.classList.add('on','fresh');setTimeout(()=>tkEl.classList.remove('fresh'),700);tkRender()}
+function tkClose(){TK.open=false;tkEl.classList.remove('on');tkSheetClose();const q=$('#tkq');q&&q.blur()}
+function tkPreview(){const v=($('#tkq')||{}).value||'',pv=$('#tkpv');if(!pv)return;if(!v.trim()){pv.innerHTML='';return}const o=tkParse(v);pv.innerHTML=[o.due?`<span class="tk-c">${esc(tkDay(o.due))}${o.time?' '+o.time:''}</span>`:'',o.span?`<span class="tk-c">${o.span==='week'?'This week':'This month'}</span>`:'',o.pri<4?`<span class="tk-c" style="color:${TKC[o.pri]}">P${o.pri}</span>`:'',o.rep?`<span class="tk-c">↻ ${o.rep}</span>`:'',o.tags.map(x=>`<span class="tk-c">#${esc(x)}</span>`).join(''),o.link?`<span class="tk-c">→ ${esc(o.link)}</span>`:''].join('')}
+function tkQuickAdd(){const q=$('#tkq'),v=q.value.trim();if(!v)return;const o=tkParse(v);let src=null;if(o.link){const n=[...S.notes.values()].find(x=>titleOf(x).toLowerCase()===o.link.toLowerCase());if(n)src={id:n.id,path:n.path,text:null,h:''}}
+ tkNew({title:o.title,pri:o.pri,due:o.due,time:o.time,span:o.span,rep:o.rep,tags:o.tags,src});q.value='';tkPreview();if(TK.view==='today'&&o.due&&o.due>tkToday()&&!o.span)toast('Added for '+tkDay(o.due),'Show',()=>{TK.view='upcoming';tkRender()});else toast('Task added')}
+tkEl.addEventListener('input',e=>{if(e.target.id==='tkq')tkPreview();if(e.target.id==='tkrn')tkSet('title',e.target.value.trim()||'Tasks')});
+tkEl.addEventListener('keydown',e=>{if(e.key==='Enter'){if(e.target.id==='tkq'){e.preventDefault();tkQuickAdd()}else if(e.target.id==='tkrn'){e.target.blur()}}});
+tkEl.addEventListener('focusout',e=>{if(e.target.id==='tkrn'){TK.rn=false;const t=$('.tk-ttl');t.innerHTML='<b id="tktl"></b><button class="tk-ed" data-k="rename" aria-label="Rename page">✎</button>';$('#tktl').textContent=tkS().title}});
+tkEl.addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(!b)return;const k=b.dataset.k,id=b.dataset.id;
+ if(k==='close')tkClose();else if(k==='view'){TK.view=b.dataset.v;tkRender()}else if(k==='grp'){TK.group=b.dataset.v;tkRender()}
+ else if(k==='coll'){const g=b.dataset.g;TK.colls.has(g)?TK.colls.delete(g):TK.colls.add(g);tkRender()}
+ else if(k==='tick'){const t=tkGet(id);if(!t)return;const r=b.closest('.tk-r');navigator.vibrate&&navigator.vibrate(10);if(t.state!=='done'&&r){r.classList.add('out');setTimeout(()=>tkDone(id,true),260)}else tkDone(id,t.state!=='done')}
+ else if(k==='open')tkSheet(id);else if(k==='add')tkQuickAdd();
+ else if(k==='rename'){TK.rn=true;const t=$('.tk-ttl');t.innerHTML=`<input id="tkrn" value="${esc(tkS().title)}" autocomplete="off">`;const i=$('#tkrn');i.focus();i.select()}});
+/* swipe: right = done, left = reschedule */
+(()=>{let sw=null;tkEl.addEventListener('pointerdown',e=>{const el=e.target.closest('.tk-sw');if(!el||e.target.closest('.tk-cb'))return;sw={el,x:e.clientX,y:e.clientY,dx:0,on:false,id:el.dataset.id}});
+ tkEl.addEventListener('pointermove',e=>{if(!sw)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y;if(!sw.on){if(Math.abs(dy)>10&&Math.abs(dy)>Math.abs(dx)){sw=null;return}if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.4){sw.on=true;try{tkEl.setPointerCapture(e.pointerId)}catch(_){}}else return}sw.dx=dx;sw.el.style.transition='none';sw.el.style.transform=`translateX(${Math.max(-140,Math.min(140,dx))}px)`;sw.el.parentElement.dataset.sw=dx>60?'r':dx<-60?'l':''});
+ const end=()=>{if(!sw)return;const{el,dx,on,id}=sw;sw=null;el.style.transition='';el.style.transform='';el.parentElement.dataset.sw='';if(!on)return;tkEl.__noclick=Date.now()+300;if(dx>80){const t=tkGet(id);if(t&&t.state!=='done'){el.parentElement.classList.add('out');setTimeout(()=>tkDone(id,true),240)}}else if(dx<-80)tkSheet(id,'resched')};
+ tkEl.addEventListener('pointerup',end);tkEl.addEventListener('pointercancel',end);tkEl.addEventListener('click',e=>{if(tkEl.__noclick&&Date.now()<tkEl.__noclick){e.stopPropagation();e.preventDefault()}},true)})();
+/* ---- task detail sheet ---- */
+function tkSheet(id,mode){const t=tkGet(id);if(!t)return;TK.sel=id;TK.sheet=true;const subs=TK.list.filter(x=>x.parent===id&&!x.del),fmt=ts=>ts?fmtD(ts):'—';
+ const ch=(k,v,l,on)=>`<button class="chip${on?' sel':''}" data-d="${k}" data-v="${v}">${l}</button>`;
+ tkdEl.innerHTML=`<div class="tkd-b" data-d="x"></div><div class="tkd-p"><div class="tkd-h"><button class="tk-cb p${t.pri}${t.state==='done'?' on':''}" data-d="tick">${t.state==='done'?'✓':''}</button><input class="tkd-t" data-f="title" value="${esc(t.title)}" autocomplete="off"><button class="sl-ib" data-d="x" aria-label="Close">✕</button></div>
+ <div class="tkd-s">
+ <label>State</label><div class="chips">${['todo','doing','wait','done','drop'].map(s=>ch('state',s,TKN[s],t.state===s)).join('')}</div>
+ <label>Priority</label><div class="chips">${[1,2,3,4].map(p=>`<button class="chip${t.pri===p?' sel':''}" data-d="pri" data-v="${p}" style="${t.pri===p?'':'color:'+TKC[p]}">P${p}</button>`).join('')}</div>
+ <label>When</label><div class="chips">${ch('qd','today','Today')}${ch('qd','tomorrow','Tomorrow')}${ch('qd','nextweek','Next week')}${ch('qd','week','This week',t.span==='week')}${ch('qd','month','This month',t.span==='month')}${ch('qd','none','No date')}</div>
+ <div class="tkd-dt"><input type="date" data-f="due" value="${t.span?'':t.due||''}"><input type="time" data-f="time" value="${t.time||''}"></div>
+ <label>Repeat</label><div class="chips">${[['','None'],['daily','Daily'],['weekdays','Weekdays'],['weekly','Weekly'],['monthly','Monthly']].map(([v,l])=>ch('rep',v,l,(t.rep||'')===v)).join('')}</div>
+ <label>Tags</label><input class="tkd-i" data-f="tags" placeholder="work, watch" value="${esc((t.tags||[]).join(', '))}" autocomplete="off">
+ <label>Notes</label><textarea class="tkd-i" data-f="notes" rows="3" placeholder="Details…">${esc(t.notes||'')}</textarea>
+ <label>Subtasks</label><div id="tkds">${subs.map(s=>`<div class="tkd-sub"><button class="tk-cb p${s.pri}${s.state==='done'?' on':''}" data-d="subtick" data-v="${s.id}">${s.state==='done'?'✓':''}</button><span class="${s.state==='done'?'dn':''}">${esc(s.title)}</span><button class="tk-x" data-d="subdel" data-v="${s.id}">×</button></div>`).join('')}</div>
+ <div class="tkd-add"><input class="tkd-i" id="tkdsub" placeholder="Add a subtask" autocomplete="off"><button class="chip" data-d="subadd">Add</button></div>
+ ${t.src?`<label>From</label><button class="sl-row" data-d="note"><b>${esc(tkSrcName(t)||'Note')}</b><span>${esc(t.src.h||t.src.path||'Open the note')}</span></button>`:''}
+ <div class="tkd-log">Created ${fmt(t.created)}<br>${t.state==='done'?'Completed '+fmt(t.done)+'<br>':''}${t.hist&&t.hist.length?`Completed ${t.hist.length}× · last ${fmt(t.hist[t.hist.length-1])}<br>`:''}Updated ${fmt(t.u)}</div>
+ <div class="chips" style="padding:10px 0 18px"><button class="chip" data-d="del" id="tkdel">Delete task</button></div></div></div>`;
+ tkdEl.classList.add('on');if(mode==='resched'){const w=tkdEl.querySelector('.tkd-s');setTimeout(()=>{const l=[...tkdEl.querySelectorAll('label')].find(x=>x.textContent==='When');l&&l.scrollIntoView({block:'start',behavior:'smooth'})},180)}}
+function tkSheetClose(){TK.sheet=false;tkdEl.classList.remove('on');document.activeElement&&document.activeElement.blur&&document.activeElement.blur()}
+tkdEl.addEventListener('change',e=>{const f=e.target.dataset.f;if(!f)return;const t=tkGet(TK.sel);if(!t)return;const v=e.target.value;const p={};
+ if(f==='title')p.title=v.trim()||t.title;else if(f==='notes')p.notes=v;else if(f==='due'){p.due=v||null;p.span=null;p.from=null;if(!v)p.time=null}else if(f==='time')p.time=v||null;else if(f==='tags')p.tags=v.split(/[ ,]+/).map(x=>x.replace(/^#/,'')).filter(Boolean);
+ tkUpd(t.id,p);if(f==='due'||f==='time')tkSheet(t.id)});
+tkdEl.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='tkdsub'){e.preventDefault();const v=e.target.value.trim();if(v){tkNew({title:v,pri:tkGet(TK.sel).pri,parent:TK.sel});e.target.value='';tkSheet(TK.sel)}}});
+tkdEl.addEventListener('click',e=>{const b=e.target.closest('[data-d]');if(!b)return;const k=b.dataset.d,v=b.dataset.v,t=tkGet(TK.sel);if(!t&&k!=='x')return;
+ if(k==='x'){tkSheetClose();return}
+ if(k==='tick'){tkDone(t.id,t.state!=='done');tkSheet(t.id)}
+ else if(k==='state'){if(v==='done')tkDone(t.id,true,{noRepeat:true});else{tkUpd(t.id,{state:v,done:null})}tkSheet(t.id)}
+ else if(k==='pri'){tkUpd(t.id,{pri:+v});tkSheet(t.id)}
+ else if(k==='qd'){const now=new Date(),p={time:t.time};if(v==='today'){p.due=tkYmd(now);p.span=null;p.from=null}else if(v==='tomorrow'){p.due=tkYmd(tkAdd(now,1));p.span=null;p.from=null}else if(v==='nextweek'){p.due=tkYmd(tkAdd(now,7));p.span=null;p.from=null}else if(v==='week'||v==='month'){const r=tkSpan(v);p.due=r.to;p.from=r.from;p.span=v;p.time=null}else{p.due=null;p.span=null;p.from=null;p.time=null}tkUpd(t.id,p);tkSheet(t.id)}
+ else if(k==='rep'){tkUpd(t.id,{rep:v||null});tkSheet(t.id)}
+ else if(k==='subtick'){const s=tkGet(v);if(s){tkDone(s.id,s.state!=='done');tkSheet(t.id)}}
+ else if(k==='subdel'){tkDel(v);tkSheet(t.id)}
+ else if(k==='subadd'){const i=$('#tkdsub'),val=i.value.trim();if(val){tkNew({title:val,pri:t.pri,parent:t.id});tkSheet(t.id)}}
+ else if(k==='note'){const n=t.src&&S.notes.get(t.src.id);if(n){tkSheetClose();tkClose();openNote(n.id)}else toast('That note is gone')}
+ else if(k==='del'){if(b.dataset.arm!=='1'){b.dataset.arm='1';b.textContent='Tap again to delete';b.classList.add('sel');return}const id=t.id;tkDel(id);tkSheetClose();toast('Task deleted','Undo',()=>{const x=TK.list.find(q=>q.id===id);if(x){x.del=false;x.u=Date.now();for(const c of TK.list)if(c.parent===id){c.del=false;c.u=Date.now()}tkPersist();tkIndex();tkBadge();tkNotifSoon();if(TK.open)tkRender()}})}});
+
+/* ---- reminders: Android local notifications (morning summary, due soon, missed, overdue nudge) ---- */
+const LN=(()=>{try{const C=window.Capacitor;if(C&&C.isNativePlatform&&C.isNativePlatform()&&C.Plugins&&C.Plugins.LocalNotifications)return C.Plugins.LocalNotifications}catch(e){}return null})();
+const tkNum=id=>{let h=0;for(let i=0;i<id.length;i++)h=(h*31+id.charCodeAt(i))%700000;return 1000+h*4};
+const tkAt=(ds,hm)=>{const[h,m]=(hm||'09:00').split(':').map(Number),d=tkYmdP(ds);d.setHours(h,m,0,0);return d.getTime()};
+function tkPlan(){const c=tkS().notif,now=Date.now(),out=[],act=TK.list.filter(tkAct),t0=tkToday();if(!c.on)return out;
+ if(c.digest)for(let i=0;i<7;i++){const day=tkYmd(tkAdd(new Date(),i)),ts=tkAt(day,c.digestAt);if(ts<=now)continue;const l=act.filter(t=>t.due===day||(i===0&&t.due&&t.due<day));if(!l.length)continue;
+  out.push({id:10+i,ch:'digest',title:(i===0?'Today: ':tkDay(day)+': ')+l.length+(l.length===1?' task':' tasks'),body:l.slice(0,4).map(t=>t.title).join(' · ')+(l.length>4?'  +'+(l.length-4)+' more':''),ts})}
+ for(const t of act){if(!t.due)continue;const base=tkNum(t.id),timed=!!t.time&&!t.span,dueTs=timed?tkAt(t.due,t.time):tkAt(t.due,'23:59');
+  if(c.soon){const ts=timed?dueTs-c.soonMin*6e4:tkAt(tkYmd(tkAdd(tkYmdP(t.due),-1)),c.soonEve);if(ts>now)out.push({id:base+1,ch:'tasks',title:timed?'Due soon':'Due tomorrow',body:t.title,ts,task:t.id})}
+  if(c.missed){const ts=timed?dueTs+c.missedLate*6e4:tkAt(tkYmd(tkAdd(tkYmdP(t.due),1)),c.missedAt);if(ts>now)out.push({id:base+2,ch:'tasks',title:'Missed task',body:t.title+' was due '+tkDue(t),ts,task:t.id})}}
+ if(c.nudge){const od=act.filter(t=>t.due&&t.due<t0);if(od.length)for(let i=0;i<5;i++){const day=tkYmd(tkAdd(new Date(),i)),ts=tkAt(day,c.missedAt);if(ts<=now)continue;out.push({id:30+i,ch:'tasks',title:od.length+(od.length===1?' task is':' tasks are')+' overdue',body:od.slice(0,3).map(t=>t.title).join(' · '),ts})}}
+ return out.sort((a,b)=>a.ts-b.ts).slice(0,120)}
+let TKNT=0;function tkNotifSoon(){clearTimeout(TKNT);TKNT=setTimeout(tkNotifSync,1200)}
+async function tkEnsurePerm(){if(!LN||TK.perm)return;try{let p=await LN.checkPermissions();if(p.display==='prompt'||p.display==='prompt-with-rationale')p=await LN.requestPermissions();TK.perm=p.display==='granted';if(TK.perm)tkNotifSoon()}catch(e){}}
+async function tkNotifSync(){if(!LN||!TK.loaded)return;try{
+  const pe=await LN.checkPermissions();if(pe.display!=='granted'){TK.perm=false;return}TK.perm=true;
+  try{await LN.createChannel({id:'tasks',name:'Task reminders',description:'Due soon and missed tasks',importance:4,visibility:1,vibration:true});await LN.createChannel({id:'digest',name:'Daily summary',description:'Your morning task summary',importance:3,visibility:1,vibration:false})}catch(e){}
+  const pend=await LN.getPending();if(pend&&pend.notifications&&pend.notifications.length)await LN.cancel({notifications:pend.notifications.map(n=>({id:n.id}))});
+  const plan=tkPlan();TK.planned=plan.length;if(!plan.length)return;
+  await LN.schedule({notifications:plan.map(p=>({id:p.id,title:p.title,body:p.body,channelId:p.ch,smallIcon:'ic_stat_notron',iconColor:'#FF4D4D',schedule:{at:new Date(p.ts).toISOString(),allowWhileIdle:true},extra:{task:p.task||''}}))})}catch(e){console.warn('notif sync',e)}}
+let TKL=false;function tkListen(){if(TKL||!LN)return;TKL=true;try{LN.addListener('localNotificationActionPerformed',ev=>{try{if(addonOn('tasks'))tkOpen();const id=ev&&ev.notification&&ev.notification.extra&&ev.notification.extra.task;if(id&&tkGet(id))setTimeout(()=>tkSheet(id),350)}catch(e){}})}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&TK.loaded){tkNotifSoon();tkBadge();if(TK.open)tkRender()}});
+/* ---- voice slips ---- */
+const VR={rec:null,chunks:[],t0:0,iv:0,stream:null};
+async function vrStart(){if(!VAULT.on){toast('Voice notes are saved in your vault folder - open a vault first');return false}
+ try{const s=await navigator.mediaDevices.getUserMedia({audio:true});const mt=['audio/webm;codecs=opus','audio/webm','audio/mp4'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(m))||'';VR.rec=new MediaRecorder(s,mt?{mimeType:mt}:{});VR.chunks=[];VR.rec.ondataavailable=e=>{if(e.data&&e.data.size)VR.chunks.push(e.data)};VR.rec.start(250);VR.t0=Date.now();VR.stream=s;return true}catch(e){toast('Microphone unavailable: '+(e.name||e.message));return false}}
+function vrStop(){return new Promise(res=>{const r=VR.rec;if(!r||r.state==='inactive'){res(null);return}r.onstop=async()=>{try{VR.stream.getTracks().forEach(t=>t.stop())}catch(e){}const type=r.mimeType||'audio/webm',blob=new Blob(VR.chunks,{type}),ext=/mp4/.test(type)?'m4a':'webm',d=new Date(),name='rec '+d.getFullYear()+'-'+tkPad(d.getMonth()+1)+'-'+tkPad(d.getDate())+' '+tkPad(d.getHours())+'.'+tkPad(d.getMinutes())+'.'+tkPad(d.getSeconds())+'.'+ext;
+  try{await vq(()=>vWrite('Voice/'+name,blob));res({name,ms:Date.now()-VR.t0})}catch(e){toast('Could not save the recording');res(null)}VR.rec=null};r.stop()})}
+const AUDX=/\.(webm|m4a|ogg|mp3|wav|opus|aac)$/i;
+async function hydAud(root){for(const el of (root||document).querySelectorAll('.embed.aud:not([data-ld])')){el.dataset.ld='1';const nm=el.dataset.embed,au=el.querySelector('audio');if(!au)continue;try{const b=await vReadBlob('Voice/'+nm);au.src=URL.createObjectURL(b)}catch(e){el.classList.add('miss');const sp=el.querySelector('.aud-n');if(sp)sp.textContent=nm+' (file not found)'}}}
+function slipVoiceChips(){const b=$('#scvc');if(!b)return;b.innerHTML=SLIP.voice.map((n,i)=>`<span class="sc-v">🎙 ${esc(n.ms?Math.round(n.ms/1000)+'s':'')}<b data-c="vrm" data-i="${i}">×</b></span>`).join('')}
+async function slipMic(){const btn=capEl.querySelector('[data-c=mic]');if(!btn)return;if(!VR.rec){const ok=await vrStart();if(!ok)return;btn.classList.add('rec');SLIP.recT=setInterval(()=>{btn.textContent='■ '+Math.floor((Date.now()-VR.t0)/1000)+'s'},250);btn.textContent='■ 0s'}else{clearInterval(SLIP.recT);btn.classList.remove('rec');btn.textContent='🎙 Voice';const r=await vrStop();if(r){SLIP.voice.push(r);slipVoiceChips()}}}
+/* ---- share into Notron from any Android app ---- */
+window.__shared=async()=>{try{const NF=NFS;if(!NF||!NF.takeShared)return;const r=await NF.takeShared();if(r&&r.text){if(!addonOn('slip')){toast('Slipbox add-on is off');return}slipCaptureOpen();const ta=$('#sctx');if(ta){ta.value=(r.subject&&!r.text.includes(r.subject)?r.subject+'\n':'')+r.text;ta.focus();toast('Shared text ready - tap Save')}}}catch(e){}};
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(()=>window.__shared&&window.__shared(),300)});
+/* ---- random note + plus menu ---- */
+function randomNote(){const pool=[...S.notes.values()].filter(n=>!isSlip(n));if(!pool.length){toast('No notes yet');return}const n=pool[Math.floor(Math.random()*pool.length)];openNote(n.id);toast('Random note: '+titleOf(n))}
+A_('random','Random note','locate',()=>{if(addonOn('random'))randomNote();else toast('Random note add-on is off')},{short:'Random'});
+A_('tasks','Tasks','check',()=>tkOpen(),{short:'Tasks'});
+A_('taskadd','New task','plus',()=>{tkOpen();setTimeout(()=>{const q=$('#tkq');q&&q.focus()},320)},{short:'Task'});
+A_('mktask','Make task from this line','check',()=>{const s=getSelection();let li=s.anchorNode&&(s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement);li=li&&li.closest&&li.closest('li');if(li&&wys.contains(li))tkMakeFromEl(li);else{let b=s.anchorNode&&(s.anchorNode.nodeType===1?s.anchorNode:s.anchorNode.parentElement);while(b&&b.parentElement!==wys)b=b&&b.parentElement;if(b&&wys.contains(b)&&b.textContent.trim())tkMakeFromEl(b);else toast('Put the cursor on a line first')}},{short:'Task'});
+const PLM=document.createElement('div');PLM.id='plusm';document.body.appendChild(PLM);
+function plusMenuClose(){PLM.classList.remove('on')}
+function plusMenu(btn){const items=[['note','New note','+'],addonOn('tasks')?['task','New task','✓']:null,addonOn('slip')?['slip','Slip idea','✎']:null,addonOn('slip')&&addonOn('voice')?['voice','Voice slip','🎙']:null,addonOn('random')?['random','Random note','⤮']:null].filter(Boolean);
+ const pr=($('#pill')||btn).getBoundingClientRect();PLM.style.bottom=(innerHeight-pr.top+10)+'px';PLM.style.right=Math.max(10,innerWidth-pr.right)+'px';
+ PLM.innerHTML=items.map(([k,l,i],n)=>`<button data-p="${k}" style="--i:${n}"><span>${i}</span>${l}</button>`).join('');PLM.classList.add('on');navigator.vibrate&&navigator.vibrate(12)}
+PLM.addEventListener('click',e=>{const b=e.target.closest('[data-p]');if(!b)return;const k=b.dataset.p;plusMenuClose();setTimeout(()=>{if(k==='note')A.newnote&&A.newnote();else if(k==='task')A.taskadd&&A.taskadd();else if(k==='slip')slipCaptureOpen();else if(k==='voice'){slipCaptureOpen({voice:true})}else if(k==='random')randomNote()},60)});
+document.addEventListener('pointerdown',e=>{if(PLM.classList.contains('on')&&!e.target.closest('#plusm'))plusMenuClose()},true);
+(()=>{let t=0,sx=0,sy=0;window.__plk=false;document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('[data-a=newnote]');clearTimeout(t);if(!b||!b.closest('#pill'))return;sx=e.clientX;sy=e.clientY;t=setTimeout(()=>{window.__plk=true;plusMenu(b)},420)},true);
+ document.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-sx,e.clientY-sy)>12){clearTimeout(t);t=0}},true);['pointerup','pointercancel'].forEach(ev=>document.addEventListener(ev,()=>{clearTimeout(t);t=0},true));
+ window.addEventListener('click',e=>{if(window.__plk&&e.target.closest&&e.target.closest('[data-a=newnote]')){window.__plk=false;e.stopPropagation();e.preventDefault()}},true)})();
+
+(()=>{let t=0,sx=0,sy=0;wys.addEventListener('pointerdown',e=>{clearTimeout(t);t=0;if(EDITF.has(st.s)||!addonOn('tasks'))return;const li=e.target.closest&&e.target.closest('li.task');if(!li||!wys.contains(li))return;const r=li.getBoundingClientRect();if(e.clientX-r.left>44)return;sx=e.clientX;sy=e.clientY;t=setTimeout(()=>{window.__lpt=Date.now()+700;tkMakeFromEl(li)},520)},true);
+ wys.addEventListener('pointermove',e=>{if(t&&Math.hypot(e.clientX-sx,e.clientY-sy)>10){clearTimeout(t);t=0}},true);['pointerup','pointercancel'].forEach(ev=>wys.addEventListener(ev,()=>{clearTimeout(t);t=0},true));
+ wys.addEventListener('click',e=>{if(window.__lpt&&Date.now()<window.__lpt){e.stopPropagation();e.preventDefault();window.__lpt=0}},true)})();
+setTimeout(()=>{tkInit();window.__shared&&window.__shared()},900);
+
+const APP_V='4.6.0';
 S.media=new Map();
 Object.assign(I,{im:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-9 9"/>',imcrop:'<path d="M6 2v14a2 2 0 0 0 2 2h14M2 6h14a2 2 0 0 1 2 2v14"/>',imrotr:'<path d="M20 11a8 8 0 1 0-2.4 5.7M20 4v7h-7"/>',imrotl:'<path d="M4 11a8 8 0 1 1 2.4 5.7M4 4v7h7"/>',imflip:'<path d="M12 3v18M8 7 3 12l5 5zM16 7l5 5-5 5z"/>',
  imwi:'<rect x="5" y="9" width="14" height="6" rx="1.5"/><path d="M4 4h16M4 20h16"/>',imwl:'<rect x="3" y="4" width="8" height="8" rx="1.5"/><path d="M14 5h7M14 9h7M3 16h18M3 20h18"/>',imwr:'<rect x="13" y="4" width="8" height="8" rx="1.5"/><path d="M3 5h7M3 9h7M3 16h18M3 20h18"/>',
@@ -2884,7 +3141,7 @@ const isImgName=n=>IMGX.test(String(n).trim())||MBN.has(String(n).trim().toLower
 function mediaByName(n){n=String(n).trim().toLowerCase();return MBN.get(n)||MBN.get(n.slice(n.lastIndexOf('/')+1))||null}
 let mdT=0;function saveMedia(){clearTimeout(mdT);mdT=setTimeout(()=>DB.kvSet('media',[...S.media.values()]),400)}
 function mediaURL(id){const u=MU.get(id);if(u)return Promise.resolve(u);return mBlobGet(id).then(b=>{if(!b)return '';const url=URL.createObjectURL(b);MU.set(id,url);return url})}
-function hydrateImgs(root){(root||document).querySelectorAll('img[data-mid]').forEach(im=>{if(im.dataset.ld)return;im.dataset.ld='1';mediaURL(im.dataset.mid).then(u=>{if(u){im.onload=()=>{const m=S.media.get(im.dataset.mid);if(m&&!m.w&&im.naturalWidth){m.w=im.naturalWidth;m.h=im.naturalHeight;const f=im.closest('.imgf');if(f)f.style.setProperty('--nw',m.w+'px')}};im.src=u}else im.classList.add('miss')})})}
+function hydrateImgs(root){try{hydAud(root)}catch(e){}(root||document).querySelectorAll('img[data-mid]').forEach(im=>{if(im.dataset.ld)return;im.dataset.ld='1';mediaURL(im.dataset.mid).then(u=>{if(u){im.onload=()=>{const m=S.media.get(im.dataset.mid);if(m&&!m.w&&im.naturalWidth){m.w=im.naturalWidth;m.h=im.naturalHeight;const f=im.closest('.imgf');if(f)f.style.setProperty('--nw',m.w+'px')}};im.src=u}else im.classList.add('miss')})})}
 function refreshImgs(id){document.querySelectorAll('img[data-mid="'+id+'"]').forEach(im=>{delete im.dataset.ld});hydrateImgs(document);wys.querySelectorAll('.imgf').forEach(f=>{const o=parseImg(f.dataset.md);if(o&&mediaByName(o.name)&&mediaByName(o.name).id===id)imgSet(f,{},true)})}
 function IS(){const g=S.set.img||(S.set.img={});g.mode=g.mode||(VAULT.on?'obsidian':'vault');g.folder=g.folder||'Images';g.noteBin=g.noteBin||'Images';g.bins=g.bins||[];g.max=g.max||(VAULT.on?99999:2200);g.q=g.q||.88;return g}
 function binFor(n){const g=IS();if(VAULT.on&&g.mode==='obsidian')return obsBin(n);const p=n?n.path:'',dir=p.includes('/')?p.slice(0,p.lastIndexOf('/')):'';
@@ -3329,7 +3586,7 @@ async function vRefresh(force){if(!VAULT.on||VAULT.refreshing)return;if(!force&&
   const oldM=new Set([...S.media.values()].map(m=>m.path));if(out.img.length!==oldM.size||out.img.some(i=>!oldM.has(i.path))){for(const it of out.img){if(!oldM.has(it.path)){const id='m'+hash(it.path).toString(36);S.media.set(id,{id,name:baseOf(it.path),path:it.path,type:MIMEX[(it.path.match(/\.(\w+)$/)||[])[1].toLowerCase()]||'image/png',w:0,h:0,size:0,ct:0,th:''})}}const np=new Set(out.img.map(i=>i.path));[...S.media].forEach(([id,m])=>{if(!np.has(m.path))S.media.delete(id)});mediaIdx();ch=true}
   out.dirs.forEach(d=>{if(!S.folders.has(d)){S.folders.add(d);ch=true}});VAULT.dirs=new Set(out.dirs);
   if(ch||nch){S.struct++;S.ver++;treeDirty=true;if(!S.tabs.length)S.active=0;if(!EDITF.has(st.s)&&(ch||!cur())){if(HOME)gSync();else showTab()}SYNC.note('Updated from another device')}
-  try{await vMetaSync()}catch(e){}}catch(e){console.warn('refresh',e)}finally{VAULT.refreshing=false;SYNC.lastCheck=Date.now()}}
+  try{await vMetaSync()}catch(e){}try{await tkPoll()}catch(e){}}catch(e){console.warn('refresh',e)}finally{VAULT.refreshing=false;SYNC.lastCheck=Date.now()}}
 /* ================= LIVE SYNC =================
    Notes are plain files, so a file-sync tool (Syncthing is the recommended one, see SYNC_GUIDE.md) moves them between devices.
    This layer makes Notron react instantly to what arrives: it watches the folder, merges edits made elsewhere into the note you
@@ -3420,16 +3677,29 @@ function seedVault(){createNote('','Welcome','# Welcome to Notron\n\nThis vault 
 function setVaultPage(){if(VAULT.on&&!VAULT.ext)vLoadExt().then(()=>{if(st.s==='settings'&&st.d.page==='vault')R.settings()});
  const x=VAULT.ext||{themes:[],snippets:[],plugins:[]},a=VAULT.cfg.appearance||{},en=new Set(a.enabledCssSnippets||[]);
  if(!VAULT.on)return `<div class="sgroup"><div class="sh">Storage</div><p class="note">Notes are stored inside the app on this device. Open a folder to keep them as real Markdown files that Obsidian can use.</p><div class="chips"><button class="chip sel" data-a="vswitch">Open a folder as vault</button></div></div>`;
+ const tkc=tkS(),nf=tkc.notif,tm=(l,k,v)=>`<label class="tkset"><span>${l}</span><input type="time" value="${v}" onchange="tkSet('notif.${k}',this.value)"></label>`,nm=(l,k,v,mn,mx)=>`<label class="tkset"><span>${l}</span><input type="number" inputmode="numeric" min="${mn}" max="${mx}" value="${v}" onchange="tkSet('notif.${k}',Math.max(${mn},Math.min(${mx},+this.value||${mn})))"></label>`;
+ const taskG=`<div class="sgroup"><div class="sh">Tasks</div><label class="tkset"><span>Page name</span><input type="text" value="${esc(tkc.title)}" maxlength="24" onchange="tkSet('title',this.value.trim()||'Tasks')"></label>
+  <p class="note">Open the app to</p><div class="chips">${[['graph','Graph'],['tasks','Tasks'],['slip','Slipbox']].map(([v,l])=>schip(tkc.openTo===v,'tkopen','data-p="'+v+'"',l)).join('')}${schip(tkc.bubble,'tkbubble','','Count bubble')}</div>
+  <p class="note">Reminders (Android notifications)</p><div class="chips">${schip(nf.on,'tkn','data-p="on"','Reminders')}${schip(nf.digest,'tkn','data-p="digest"','Morning summary')}${schip(nf.soon,'tkn','data-p="soon"','Due soon')}${schip(nf.missed,'tkn','data-p="missed"','Missed')}${schip(nf.nudge,'tkn','data-p="nudge"','Overdue nudge')}</div>
+  ${tm('Morning summary at','digestAt',nf.digestAt)}${nm('Timed tasks: remind me (minutes before)','soonMin',nf.soonMin,0,1440)}${tm('Date-only tasks: remind the evening before at','soonEve',nf.soonEve)}${nm('Missed: remind after (minutes)','missedLate',nf.missedLate,5,1440)}${tm('Missed and overdue reminders at','missedAt',nf.missedAt)}
+  <div class="chips"><button class="chip" data-a="tkperm">Allow notifications</button><button class="chip" data-a="tkexact">Exact timing</button><button class="chip" data-a="tktest">Send test</button></div><p class="note">${TK.planned!=null?TK.planned+' reminders scheduled. ':''}Reminders are set when Notron opens, so changes made on another device show up here after the app is opened.</p></div>`;
+ const addG=`<div class="sgroup"><div class="sh">Add-ons</div>${ADDONS.map(a=>`<div class="adrow"><div><b>${a.name}</b><span>${a.desc}</span></div>${schip(addonOn(a.id),'addon','data-p="'+a.id+'"',addonOn(a.id)?'On':'Off')}</div>`).join('')}</div>`;
  const so=syncOn(),ago=SYNC.lastCheck?Math.max(0,Math.round((Date.now()-SYNC.lastCheck)/1000))+'s ago':'not yet';
  const syncG=`<div class="sgroup"><div class="sh">Sync between devices</div><p class="note">${so?'Live':'Paused'} · this device: <b>${esc(SYNC.name)}</b> · last check ${ago}<br>${SYNC.conflicts?plural(SYNC.conflicts,'older copy')+' kept this session':'No clashes so far'}. Changes made on another device show up here within a few seconds; edits on both sides are merged, and if the same lines were changed the newer edit wins and the other is saved.</p>
   <div class="chips">${schip(so,'vlive','','Live sync')}<button class="chip" data-a="vsync">Sync now</button><button class="chip" data-a="vconf">Older copies…</button><button class="chip" data-a="vrebuild">Rebuild from disk</button></div>
   <p class="note">Use a file-sync app such as Syncthing on the vault folder to move files between devices (see SYNC_GUIDE.md). Notron does the rest.</p><div id="vconflist"></div></div>`;
- return syncG+`<div class="sgroup"><div class="sh">Vault folder</div><p class="note"><b>${esc(VAULT.name)}</b> · ${plural(S.notes.size,'note')} · ${plural(S.folders.size,'folder')} · ${plural(S.media.size,'image')}<br>Settings are saved in .obsidian/notron.json inside the folder.</p>
+ return taskG+addG+syncG+`<div class="sgroup"><div class="sh">Vault folder</div><p class="note"><b>${esc(VAULT.name)}</b> · ${plural(S.notes.size,'note')} · ${plural(S.folders.size,'folder')} · ${plural(S.media.size,'image')}<br>Settings are saved in .obsidian/notron.json inside the folder.</p>
   <div class="chips"><button class="chip" data-a="vreload">Reload from disk</button><button class="chip" data-a="vswitch">Switch vault</button><button class="chip" data-a="vimport">Copy in-app notes here</button></div></div>
  <div class="sgroup"><div class="sh">CSS snippets</div>${x.snippets.length?`<div class="chips">${x.snippets.map(s=>schip(en.has(s),'vsnip',`data-p="${esc(s)}"`,esc(s))).join('')}</div>`:'<p class="note">Put .css files in .obsidian/snippets to see them here.</p>'}</div>
  <div class="sgroup"><div class="sh">Themes</div>${x.themes.length?`<div class="chips">${schip(!a.cssTheme,'vtheme','data-p=""','None')}${x.themes.map(s=>schip(a.cssTheme===s,'vtheme',`data-p="${esc(s)}"`,esc(s))).join('')}</div>`:'<p class="note">Themes found in .obsidian/themes appear here.</p>'}<p class="note">Obsidian themes are applied as extra CSS on top of Notron.</p></div>
  <div class="sgroup"><div class="sh">Community plugins</div>${x.plugins.length?x.plugins.map(p=>`<p class="note">${esc(p.name)} ${esc(p.v)} · not supported yet</p>`).join(''):'<p class="note">None found. Plugin support will arrive in a later version.</p>'}</div>`}
-Object.assign(A,{vlive:()=>{S.set.sync=Object.assign({},S.set.sync,{on:!syncOn()});saveMeta();st.d.keep=true;R.settings();toast(syncOn()?'Live sync on':'Live sync paused')},
+Object.assign(A,{tkopen:el=>{tkSet('openTo',el.dataset.p);st.d.keep=true;R.settings()},tkbubble:()=>{tkSet('bubble',!tkS().bubble);st.d.keep=true;R.settings()},
+ tkn:el=>{const k=el.dataset.p,v=!tkS().notif[k];tkSet('notif.'+k,v);if(k==='on'&&v)tkEnsurePerm();st.d.keep=true;R.settings()},
+ tkperm:async()=>{if(!LN){toast('Notifications work in the Android app');return}try{const p=await LN.requestPermissions();toast(p.display==='granted'?'Notifications allowed':'Blocked - allow them in Android settings > Apps > Notron');tkNotifSoon()}catch(e){toast('Could not ask: '+(e.message||e))}},
+ tkexact:async()=>{if(!LN){toast('Works in the Android app');return}try{const r=await LN.checkExactNotificationSetting();if(r&&r.exact_alarm==='granted')toast('Exact timing is already allowed');else{toast('Allow "Alarms & reminders" for Notron');await LN.changeExactNotificationSetting()}}catch(e){toast('Not needed on this Android version')}},
+ tktest:async()=>{if(!LN){toast('Works in the Android app');return}try{let p=await LN.checkPermissions();if(p.display!=='granted')p=await LN.requestPermissions();if(p.display!=='granted'){toast('Notifications are blocked');return}try{await LN.createChannel({id:'tasks',name:'Task reminders',description:'Due soon and missed tasks',importance:4,visibility:1,vibration:true})}catch(e){}await LN.schedule({notifications:[{id:9,title:'Notron reminders work',body:'This is a test from Settings.',channelId:'tasks',smallIcon:'ic_stat_notron',iconColor:'#FF4D4D',schedule:{at:new Date(Date.now()+5000).toISOString(),allowWhileIdle:true}}]});toast('Test arrives in 5 seconds - leave the app')}catch(e){toast('Test failed: '+(e.message||e))}},
+ addon:el=>{const id=el.dataset.p,o=Object.assign({},S.set.addons||{});o[id]=!addonOn(id);S.set.addons=o;saveMeta();st.d.keep=true;R.settings();try{gBar()}catch(e){}tkBadge()},
+ vlive:()=>{S.set.sync=Object.assign({},S.set.sync,{on:!syncOn()});saveMeta();st.d.keep=true;R.settings();toast(syncOn()?'Live sync on':'Live sync paused')},
  vsync:async()=>{toast('Checking for changes…');const t0=Date.now();await vLiveTick(true);toast('Up to date · checked in '+(Date.now()-t0)+' ms');st.d.keep=true;R.settings()},
  vrebuild:async()=>{if(!confirm('Re-read every note from the folder? Anything not yet written to disk is dropped.'))return;toast('Rebuilding…');try{await DB.kvSet('idx',null);for(const n of S.notes.values())DB.rawDel(n.id)}catch(e){}setTimeout(()=>location.reload(),300)},
  vconf:async()=>{const box=document.getElementById('vconflist');if(!box)return;const items=[];try{const d=await vDir('.notron/conflicts',false);for await(const[nm,h]of d.entries())if(h.kind==='file')items.push(nm)}catch(e){}
@@ -4612,6 +4882,8 @@ function setupPWA(){
  try{const SB=C.Plugins&&C.Plugins.SystemBars;SB&&SB.hide&&SB.hide({})}catch(e){}
  const A=C.Plugins&&C.Plugins.App;if(!A||!A.addListener)return;
  A.addListener('backButton',()=>{try{
+  if(typeof PLM!=='undefined'&&PLM.classList.contains('on')){plusMenuClose();return}
+  if(typeof TK!=='undefined'){if(TK.sheet){tkSheetClose();return}if(TK.open&&!(typeof SLIP!=='undefined'&&(SLIP.cap||SLIP.open))){tkClose();return}}
   if(typeof SLIP!=='undefined'){if(SLIP.cap){slipCapClose();return}if(SLIP.open){if(SLIP.view!=='list'){SLIP.view=SLIP.view==='pickPos'?'pickNote':'list';slipRenderList()}else slipClose();return}}
   if(typeof st!=='undefined'&&st.s&&st.s!=='nav'){close();return}
   if(typeof IMGSEL!=='undefined'&&IMGSEL){imgDesel();return}

@@ -9,5 +9,11 @@
 	"android": {
 		"allowMixedContent": false,
 		"backgroundColor": "#0c0d11"
+	},
+	"plugins": {
+		"LocalNotifications": {
+			"smallIcon": "ic_stat_notron",
+			"iconColor": "#FF4D4D"
+		}
 	}
 }

@@ -45,6 +45,9 @@ import java.util.concurrent.Future;
 @CapacitorPlugin(name = "NotronFS")
 public class NotronFSPlugin extends Plugin {
 
+    public static String pendingSubject = null;
+    public static String pendingText = null;
+
     private static final String[] COLS = new String[] {
         DocumentsContract.Document.COLUMN_DOCUMENT_ID,
         DocumentsContract.Document.COLUMN_DISPLAY_NAME,
@@ -78,6 +81,20 @@ public class NotronFSPlugin extends Plugin {
         } finally {
             c.close();
         }
+    }
+
+    /* ---------- text shared from other apps ---------- */
+
+    @PluginMethod
+    public void takeShared(PluginCall call) {
+        JSObject o = new JSObject();
+        if (pendingText != null) {
+            o.put("text", pendingText);
+            o.put("subject", pendingSubject == null ? "" : pendingSubject);
+        }
+        pendingText = null;
+        pendingSubject = null;
+        call.resolve(o);
     }
 
     /* ---------- keyboard ---------- */
